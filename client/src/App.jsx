@@ -1,41 +1,34 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 import axios from "axios";
 
 function App() {
+  // Data pulled from backend is saved here
   const [count, setCount] = useState(0);
   const [array, setArray] = useState([]);
 
+  // Base Axios usage
   const fetchAPI = async () => {
     const response = await axios.get("http://localhost:8080/api");
     setArray(response.data.fruits);
     console.log(response.data.fruits);
   }
-
+  // API Fetch
   useEffect( () => {
     fetchAPI();
   }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+    <div>
+      <h1>To-Be PES</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+          CLICK HERE! Count is {count}
         </button>
         <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+          Lots to do.
         </p>
+
+        {/** Use data pulled from backend to display strings */}
         {
           array.map((fruit, index) => (
             <div key={index}>
@@ -46,9 +39,9 @@ function App() {
         }
       </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        If you can see fruits, that means the backend is working
       </p>
-    </>
+    </div>
   )
 }
 

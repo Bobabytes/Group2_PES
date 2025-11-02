@@ -26,6 +26,11 @@ cd <CLIENT_FOLDER>
 npm install
 # Step 3: Run the application
 npm run dev
+
+
+# Packages, if needed
+npm i @tanstack/react-query
+npm install tailwindcss @tailwindcss/vite
 ```
 ### FAQ (& Known Bugs)
 1. "npm[___] is not digitally signed" - P.M(222378)
