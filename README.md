@@ -28,7 +28,7 @@ npm install
 npm run dev
 
 
-# Packages, if needed
+# Packages, if needed (prolly not)
 npm i @tanstack/react-query
 npm i tailwindcss @tailwindcss/vite
 npm i react-router
@@ -56,7 +56,7 @@ This project is built with:
 - React Router Dom(You need to install this seperately from react idk -p.m.)
 - Tanstack React Query (Used in Login page)
 - Radix-UI
-- And some other less prevalent libraries
+- And others
 
 ### Learning Resources
 

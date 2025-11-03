@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
-import '../index.css';
 
 function Home() {
         // Data pulled from backend is saved here

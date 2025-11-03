@@ -1,2 +1,117 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+
+@theme {
+  /* Color System */
+  --color-background: hsl(140 20% 97%);
+  --color-foreground: hsl(140 50% 10%);
+  
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(140 50% 10%);
+  
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(140 50% 10%);
+  
+  --color-primary: hsl(142 76% 36%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-primary-glow: hsl(142 76% 46%);
+  
+  --color-secondary: hsl(140 25% 85%);
+  --color-secondary-foreground: hsl(140 50% 10%);
+  
+  --color-muted: hsl(140 20% 92%);
+  --color-muted-foreground: hsl(140 20% 40%);
+  
+  --color-accent: hsl(168 76% 42%);
+  --color-accent-foreground: hsl(0 0% 100%);
+  
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  
+  --color-border: hsl(140 20% 88%);
+  --color-input: hsl(140 20% 88%);
+  --color-ring: hsl(142 76% 36%);
+
+  /* Border Radius */
+  --radius: 0.75rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 hsl(140 20% 88% / 0.05);
+  --shadow-md: 0 4px 6px -1px hsl(140 20% 88% / 0.1), 0 2px 4px -1px hsl(140 20% 88% / 0.06);
+  --shadow-lg: 0 10px 15px -3px hsl(142 76% 36% / 0.1), 0 4px 6px -2px hsl(142 76% 36% / 0.05);
+  --shadow-glow: 0 0 40px hsl(142 76% 36% / 0.15);
+
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer theme {
+  :root, :host {
+    /* Light theme is default from @theme variables above */
+  }
+
+  .dark {
+    --color-background: hsl(140 45% 8%);
+    --color-foreground: hsl(140 20% 98%);
+    
+    --color-card: hsl(140 40% 12%);
+    --color-card-foreground: hsl(140 20% 98%);
+    
+    --color-popover: hsl(140 40% 12%);
+    --color-popover-foreground: hsl(140 20% 98%);
+    
+    --color-primary: hsl(142 76% 36%);
+    --color-primary-foreground: hsl(0 0% 100%);
+    --color-primary-glow: hsl(142 76% 46%);
+    
+    --color-secondary: hsl(140 30% 18%);
+    --color-secondary-foreground: hsl(140 20% 98%);
+    
+    --color-muted: hsl(140 30% 18%);
+    --color-muted-foreground: hsl(140 20% 70%);
+    
+    --color-accent: hsl(168 76% 42%);
+    --color-accent-foreground: hsl(0 0% 100%);
+    
+    --color-destructive: hsl(0 63% 31%);
+    --color-destructive-foreground: hsl(140 20% 98%);
+    
+    --color-border: hsl(140 35% 20%);
+    --color-input: hsl(140 35% 20%);
+    --color-ring: hsl(142 76% 36%);
+    
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(142 76% 36% / 0.2), 0 4px 6px -2px hsl(142 76% 36% / 0.1);
+    --shadow-glow: 0 0 40px hsl(142 76% 36% / 0.2);
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+/* Custom gradient classes - since gradients aren't directly supported in @theme */
+.gradient-primary {
+  background: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(152 70% 42%) 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(180deg, var(--color-card) 0%, hsl(140 20% 98%) 100%);
+}
+
+.dark .gradient-card {
+  background: linear-gradient(180deg, var(--color-card) 0%, hsl(140 35% 15%) 100%);
+}
