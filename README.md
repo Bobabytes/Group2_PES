@@ -49,6 +49,7 @@ This project is built with:
 - SQLite (To be added)
 - shadcn-ui (The entire /components/ library is from here)
 - Tailwind CSS (All of the styling is from here)
+- React Router Dom(You need to install this seperately from react idk -p.m.)
 - Tanstack React Query (Used in Login page)
 - Radix-UI
 - And some other less prevalent libraries
