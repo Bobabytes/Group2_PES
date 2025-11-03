@@ -30,7 +30,11 @@ npm run dev
 
 # Packages, if needed
 npm i @tanstack/react-query
-npm install tailwindcss @tailwindcss/vite
+npm i tailwindcss @tailwindcss/vite
+npm i react-router
+npm i sonner
+npm i radix-ui
+npm i next-themes
 ```
 ### FAQ (& Known Bugs)
 1. "npm[___] is not digitally signed" - P.M(222378)
