@@ -20,6 +20,18 @@ function Login() {
     setArray(response.data.fruits);
     console.log(response.data.fruits);
     }
+
+    const authAPI = {
+    login: async (employeeId, password, role) => {
+        const response = await axios.post("http://localhost:8080/api/auth/login", {
+            employeeId,
+            password,
+            role
+        });
+        return response.data;
+     }
+    };
+
     // API Fetch
     useEffect( () => {
     fetchAPI();
@@ -33,19 +45,54 @@ function Login() {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (!employeeId || !password || !role) {
         toast.error("Please fill in all fields.");
         return;
         }
+       
 
-        localStorage.setItem("userRole", role);
-        localStorage.setItem("employeeId", employeeId);
-        
-        toast.success("Login successful!");
-        navigate("/home");
+        try {
+            
+            const response = await authAPI.login(employeeId, password, role);
+            
+            if (response.success) {
+                // Store user data from backend response
+                localStorage.setItem("userRole", response.user.role);
+                localStorage.setItem("employeeId", response.user.employeeId);
+                localStorage.setItem("userName", response.user.name);
+                localStorage.setItem("department", response.user.department);
+                localStorage.setItem("isLoggedIn", "true");
+                
+                toast.success("Login successful!");
+                
+                // Redirect based on role
+                switch(response.user.role) {
+                    case "hr":
+                        navigate("/hr/dashboard");
+                        break;
+                    case "employee":
+                        navigate("/employee/dashboard");
+                        break;
+                    case "finance":
+                        navigate("/finance/dashboard");
+                        break;
+                    case "administrator":
+                        navigate("/admin/dashboard");
+                        break;
+                    default:
+                        navigate("/home");
+                }
+            } else {
+                toast.error(response.message || "Login failed!");
+            }
+            
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error(error.response?.data?.message || "Login failed. Please try again.");
+        } 
     };
 
 
