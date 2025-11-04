@@ -83,3 +83,19 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Connecting the database
+
+You will see a "database.db" file as well as a "database.sql" in the server folder. That is our database.
+Once you are in the terminal and in the server directory, type "node" and press the Tab button until you see ".\server.js"
+Press enter. You should see the following message:
+"Server started on port 8080
+Users table created successfully!"
+
+This means that the database has been connected and a table should appear on your SQLBrowser.
+
+You can download the SQL Browser here: https://sqlitebrowser.org/dl/
+
+When you install and run the SQL Browser app, select "Open Database" (up top) and navigate to the folder where the group project is saved on your PC's and there should be a file called "database.db"
+
+Select that and it will show you the database created when running the command "node .\server.js"
