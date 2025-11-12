@@ -62,6 +62,7 @@ function Login() {
       }
 
       // Save confirmed role
+      localStorage.setItem("selectedRole", role);
       localStorage.setItem("userRole", actualRole);
       localStorage.setItem("employeeId", employeeId);
 

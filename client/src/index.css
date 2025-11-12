@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@reference "tailwindcss";
 
 @theme {
   /* Color System */
@@ -114,4 +114,99 @@
 
 .dark .gradient-card {
   background: linear-gradient(180deg, var(--color-card) 0%, hsl(140 35% 15%) 100%);
+}
+
+
+
+/* Individuals for Shadcn Components Begin Here */
+/* Place any custom styling here */
+.dashboard-container {
+  @apply space-y-6 animate-fade-in;
+}
+
+.dashboard-header {
+  @apply flex items-center justify-between;
+}
+
+.dashboard-title {
+  @apply text-3xl font-bold tracking-tight;
+}
+
+.dashboard-subtitle {
+  @apply text-muted-foreground;
+}
+
+.dashboard-action-button {
+  @apply gap-2 bg-gradient-primary shadow-md hover:opacity-90;
+}
+
+/* Stats Card Styles */
+.stats-grid {
+  @apply grid gap-4 md:grid-cols-2 lg:grid-cols-4;
+}
+
+.stats-card {
+  @apply rounded-lg border bg-card p-6 shadow-sm transition-all hover:shadow-md;
+}
+
+.stats-card-header {
+  @apply flex items-center justify-between;
+}
+
+.stats-card-title {
+  @apply text-sm font-medium text-muted-foreground;
+}
+
+.stats-card-value {
+  @apply text-2xl font-bold;
+}
+
+.stats-card-description {
+  @apply text-xs text-muted-foreground;
+}
+
+/* List Styles */
+.list-card {
+  @apply rounded-lg border bg-card shadow-sm;
+}
+
+.list-card-header {
+  @apply border-b bg-muted/50 px-6 py-4;
+}
+
+.list-card-title {
+  @apply text-lg font-semibold;
+}
+
+.list-card-content {
+  @apply p-6;
+}
+
+.list-item {
+  @apply flex items-center justify-between border-b py-4 last:border-0;
+}
+
+.list-item-main {
+  @apply flex-1;
+}
+
+.list-item-title {
+  @apply font-medium;
+}
+
+.list-item-subtitle {
+  @apply text-sm text-muted-foreground;
+}
+
+.list-item-meta {
+  @apply text-sm text-muted-foreground;
+}
+
+/* Quick Actions */
+.quick-actions-grid {
+  @apply grid gap-4 md:grid-cols-3;
+}
+
+.quick-action-button {
+  @apply h-auto flex-col gap-2 p-6;
 }
