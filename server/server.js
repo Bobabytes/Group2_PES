@@ -7,36 +7,40 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-const users = [
-    {
-        employeeId: "HR001",
-        password: "hr123",
-        name: "Sarah Johnson",
-        role: "hr",
-        department: "Human Resources"
-    },
-    {
-        employeeId: "EMP001",
-        password: "emp123", 
-        name: "John Doe",
-        role: "employee",
-        department: "Engineering"
-    },
-    {
-        employeeId: "FIN001",
-        password: "fin123",
-        name: "Mike Wilson",
-        role: "finance",
-        department: "Finance"
-    },
-    {
-        employeeId: "ADMIN001",
-        password: "admin123",
-        name: "Admin User",
-        role: "administrator",
-        department: "IT"
+const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const dbPath = path.join(__dirname, 'database.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Error opening database:', err);
+    } else {
+        console.log('Connected to SQLite database');
+        initializeDatabase();
     }
-];
+});
+
+function initializeDatabase() {
+    const sql = fs.readFileSync(path.join(__dirname, 'database.sql'), 'utf8');
+    db.exec(sql, (err) => {
+        if (err) {
+            console.error('Error executing SQL file:', err);
+        } else {
+            console.log('Users table initialized successfully!');
+            
+            // Verify data was inserted
+            db.all("SELECT * FROM Users", (err, rows) => {
+                if (err) {
+                    console.error('Error checking data:', err);
+                } else {
+                    console.log('Current users in database:', rows);
+                }
+            });
+        }
+    });
+}
+
 
 // Backend route for frontend interaction
 app.get("/api", (req, res) => {
@@ -54,34 +58,52 @@ app.post("/api/auth/login", (req, res) => {
         });
     }
 
-    // Find user
-    const user = users.find(u => 
-        u.employeeId === employeeId && 
-        u.role === role
-    );
+ const query = `SELECT * FROM Users WHERE employeeId = ? AND role = ?`;
+    
+    db.get(query, [employeeId, role], (err, user) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ 
+                success: false,
+                message: "Internal server error" 
+            });
+        }
 
-    if (!user) {
-        return res.status(401).json({ 
-            success: false,
-            message: "Invalid employee ID or role" 
-        });
-    }
+        if (!user) {
+            return res.status(401).json({ 
+                success: false,
+                message: "Invalid employee ID or role" 
+            });
+        }
 
-    // Check password
-    if (user.password !== password) {
-        return res.status(401).json({ 
-            success: false,
-            message: "Invalid password" 
-        });
-    }
+        // Check password
+        if (user.password !== password) {
+            return res.status(401).json({ 
+                success: false,
+                message: "Invalid password" 
+            });
+        }
 
-    if(user.password == password && user.employeeId == employeeId){
-        return res.status(402).json({
+        // Login successful
+        res.json({
             success: true,
-            message: "Login successful"
+            message: "Login successful",
+            user: {
+                employeeId: user.employeeId,
+                role: user.role
+            }
         });
-    }
+    });
+});
 
+process.on('SIGINT', () => {
+    db.close((err) => {
+        if (err) {
+            console.error(err.message);
+        }
+        console.log('Database connection closed.');
+        process.exit(0);
+    });
 });
 /*
     // Return user data (without password)
