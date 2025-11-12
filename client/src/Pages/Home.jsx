@@ -1,49 +1,58 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 function Home() {
-        // Data pulled from backend is saved here
-    const [count, setCount] = useState(0);
-    const [array, setArray] = useState([]);
+  const [count, setCount] = useState(0);
+  const [array, setArray] = useState([]);
+  const [role, setRole] = useState("");
 
-    // Base Axios usage
-    const fetchAPI = async () => {
+  // Fetch test API data
+  const fetchAPI = async () => {
     const response = await axios.get("http://localhost:8080/api");
     setArray(response.data.fruits);
-    console.log(response.data.fruits);
-    }
-    // API Fetch
-    useEffect( () => {
+  };
+
+  // Load role from localStorage
+  useEffect(() => {
     fetchAPI();
-    }, []);
+    const savedRole = localStorage.getItem("userRole");
+    if (savedRole) setRole(savedRole);
+  }, []);
 
-    return (
-        <div>
-        <h1>Home Page</h1>
-        <hr></hr>
-        <div className="card">
-            <button onClick={() => setCount((count) => count + 1)}>
-            CLICK HERE! Count is {count}
-            </button>
-            <p>
-            Lots to do.
-            </p>
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">Home Page</h1>
+      <hr className="mb-4" />
 
-            {/** Use data pulled from backend to display strings */}
-            {
-            array.map((fruit, index) => (
-                <div key={index}>
-                <p>{fruit}</p>
-                <br></br>
-                </div>
-            ))
-            }
+      <div className="card mb-4">
+        <button onClick={() => setCount((count) => count + 1)}>
+          CLICK HERE! Count is {count}
+        </button>
+        <p>Lots to do.</p>
+      </div>
+
+      {role && (
+        <div className="mb-4">
+          <p className="text-lg font-medium">
+            {role.toLowerCase() === "hr" && "👩‍💼 This is the HR page — you can manage employees."}
+            {role.toLowerCase() === "employee" && "👨‍💼 This is the Employee page — view your info."}
+            {role.toLowerCase() === "finance" && "💰 This is the Finance page — manage company payments."}
+            {role.toLowerCase() === "administrator" && "🛠️ This is the Admin dashboard — full system access."}
+          </p>
         </div>
-        <p className="read-the-docs">
-            If you can see fruits, that means the backend is working
-        </p>
+      )}
+
+      <p className="read-the-docs mb-2">
+        Debug: If you can see fruits, backend is working
+      </p>
+      {array.map((fruit, index) => (
+        <div key={index}>
+          <p>{fruit}</p>
+          <br />
         </div>
-    )
+      ))}
+    </div>
+  );
 }
 
 export default Home;
