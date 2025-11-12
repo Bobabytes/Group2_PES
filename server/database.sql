@@ -1,15 +1,9 @@
--- Create a table for storing login users
-CREATE TABLE IF NOT EXISTS Users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    employeeId TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    role TEXT NOT NULL,
-    salary REAL NOT NULL,
-    pay_raise INTEGER NOT NULL,
-    working_days INTEGER NOT NULL DEFAULT 22,
-    paid_leaves INTEGER NOT NULL DEFAULT 2,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE,
+  password TEXT,
+  position TEXT
+)
 
 -- Create a table for storing leave records
 CREATE TABLE IF NOT EXISTS Leaves (
