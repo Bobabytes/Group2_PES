@@ -83,3 +83,27 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Connecting the database
+
+You will see a "database.db" file as well as a "database.sql" in the server folder. That is our database.
+Once you are in the terminal and in the server directory, type "node" and press the Tab button until you see ".\server.js"
+Press enter. You should see the following message:
+"Server started on port 8080
+Users table created successfully!"
+
+This means that the database has been connected and a table should appear on your SQLBrowser.
+
+You can download the SQL Browser here: https://sqlitebrowser.org/dl/
+
+When you install and run the SQL Browser app, select "Open Database" (up top) and navigate to the folder where the group project is saved on your PC's and there should be a file called "database.db"
+
+Select that and it will show you the database created when running the command "node .\server.js"
+
+TOMAS => I have now added 6 users with different positions for all of you to check whether the software works.
+
+Open the database file from this branch on your DB browser and go to the browse data tab to see the users.
+
+Try logging in using any credentials and let me know tomorrow what happens. Hope it works as intended.
+
+You can choose a role and then enter username + password. If the role is wrong, you will still login but once inside you will be directed to the correct page (i.e HR page or Finance page) depending on your actual role. A message should also appear on the bottom right warning you to choose a correct role next time. This makes sure that the system fetches the data from the database and grants access if you have to login while also making sure that each employee sees only what their access rights grant them.

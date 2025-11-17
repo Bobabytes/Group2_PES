@@ -1,49 +1,85 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import axios from "axios";
+import Header from "../components/custom/Header";
+import EmployeeDashboard from "./Dashboards/EmployeeDashboard";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-        // Data pulled from backend is saved here
-    const [count, setCount] = useState(0);
-    const [array, setArray] = useState([]);
+  const navigate = useNavigate();
+  const [count, setCount] = useState(0);
+  const [array, setArray] = useState([]);
+  const [role, setRole] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
 
-    // Base Axios usage
-    const fetchAPI = async () => {
+  // Fetch test API data
+  const fetchAPI = async () => {
     const response = await axios.get("http://localhost:8080/api");
     setArray(response.data.fruits);
-    console.log(response.data.fruits);
-    }
-    // API Fetch
-    useEffect( () => {
+  };
+
+  const [isLoading, setIsLoading] = useState(true);
+  // Load from localStorage
+  useEffect(() => {
+    // Debug
     fetchAPI();
-    }, []);
+    // Setup local variables
+    const savedRole = localStorage.getItem("userRole");
+    const savedId = localStorage.getItem("employeeId");
+    
+    if (!savedRole || !savedId) {
+      navigate("/");
+    }
+    
+    setRole(savedRole);
+    setEmployeeId(savedId);
+  }, [navigate]);
 
-    return (
-        <div>
-        <h1>Home Page</h1>
-        <hr></hr>
-        <div className="card">
-            <button onClick={() => setCount((count) => count + 1)}>
-            CLICK HERE! Count is {count}
-            </button>
-            <p>
-            Lots to do.
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("employeeId");
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
+
+  return (
+    // DIV WRAP
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      {/* HEADER NEEDS VARIABLES AND LOGOUT FUNCTION PASSED -P*/}
+      <Header
+      />
+      <div className="p-6 m-4">
+        <h1 className="text-3xl font-bold mb-4">Home</h1>
+        <hr className="mb-4" />
+        {role && (
+          <div className="mb-4">
+            <p className="text-lg font-medium">
+              {role.toLowerCase() === "hr" && "HR.jsx would go here."}
+              {role.toLowerCase() === "employee" && <EmployeeDashboard />}
+              {role.toLowerCase() === "finance" && "💰 This is the Finance page — manage company payments."}
+              {role.toLowerCase() === "administrator" && "🛠️ This is the Admin dashboard — full system access."}
             </p>
+          </div>
+        )}
+      </div>
 
-            {/** Use data pulled from backend to display strings */}
-            {
-            array.map((fruit, index) => (
-                <div key={index}>
-                <p>{fruit}</p>
-                <br></br>
-                </div>
-            ))
-            }
+      <hr></hr>
+        <div className="card mb-4">
+          <button onClick={() => setCount((count) => count + 1)}>
+            CLICK HERE! Count is {count}
+          </button>
+          <p>Home : Employee. Lots to do.</p>
         </div>
-        <p className="read-the-docs">
-            If you can see fruits, that means the backend is working
+        <p className="read-the-docs mb-2">
+          Debug: If you can see fruits, backend is working
         </p>
-        </div>
-    )
+        {array.map((fruit, index) => (
+          <div key={index}>
+            <p>{fruit}</p>
+            <br />
+          </div>
+        ))}
+    </div>
+  );
 }
 
 export default Home;
