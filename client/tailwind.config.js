@@ -1,3 +1,4 @@
+// DEFUNCT FILE. Tailwind configuration in V4 is now located in the CSS file itself.
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],

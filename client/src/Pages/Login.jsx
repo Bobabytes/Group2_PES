@@ -77,7 +77,7 @@ function Login() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-4">
-            <div className="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl gradient-primary shadow-lg">
+            <div className="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl shadow-lg bg-gradient-primary">
               <Building2 className="w-8 h-8 text-primary-foreground" />
             </div>
             <div className="space-y-2 text-center">

@@ -1,101 +1,151 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@config "../tailwind.config.js";
+/* @config "../tailwind.config.js"; */
+@theme {
+  /* Colors */
+  --color-background: hsl(140 20% 97%);
+  --color-foreground: hsl(140 50% 10%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(140 50% 10%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(140 50% 10%);
+  --color-primary: hsl(142 76% 36%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(140 25% 85%);
+  --color-secondary-foreground: hsl(140 50% 10%);
+  --color-muted: hsl(140 20% 92%);
+  --color-muted-foreground: hsl(140 20% 40%);
+  --color-accent: hsl(168 76% 42%);
+  --color-accent-foreground: hsl(0 0% 100%);
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  --color-border: hsl(140 20% 88%);
+  --color-input: hsl(140 20% 88%);
+  --color-ring: hsl(142 76% 36%);
+  
+  /* Chart colors */
+  --color-chart-1: hsl(140 50% 10%);
+  --color-chart-2: hsl(140 50% 10%);
+  --color-chart-3: hsl(140 50% 10%);
+  --color-chart-4: hsl(140 50% 10%);
+  --color-chart-5: hsl(140 50% 10%);
 
+  /* Background Images */
+  --background-image-gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
+  --background-image-gradient-hero: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(152 70% 42%) 100%);
+  --background-image-gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(140 20% 98%) 100%);
+
+  /* Border Radius */
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+
+/* Keyframes for animations */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base styles with CSS variables for dark mode support */
 @layer base {
   :root {
     --background: 140 20% 97%;
     --foreground: 140 50% 10%;
-
     --card: 0 0% 100%;
     --card-foreground: 140 50% 10%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 140 50% 10%;
-
     --primary: 142 76% 36%;
     --primary-foreground: 0 0% 100%;
-    
     --primary-glow: 142 76% 46%;
-
     --secondary: 140 25% 85%;
     --secondary-foreground: 140 50% 10%;
-
     --muted: 140 20% 92%;
     --muted-foreground: 140 20% 40%;
-
     --accent: 168 76% 42%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 140 20% 88%;
     --input: 140 20% 88%;
     --ring: 142 76% 36%;
-
     --radius: 0.75rem;
-    
     --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
     --gradient-hero: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(152 70% 42%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(140 20% 98%) 100%);
-    
     --shadow-sm: 0 1px 2px 0 hsl(140 20% 88% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(140 20% 88% / 0.1), 0 2px 4px -1px hsl(140 20% 88% / 0.06);
     --shadow-lg: 0 10px 15px -3px hsl(142 76% 36% / 0.1), 0 4px 6px -2px hsl(142 76% 36% / 0.05);
     --shadow-glow: 0 0 40px hsl(142 76% 36% / 0.15);
-
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
     --background: 140 45% 8%;
     --foreground: 140 20% 98%;
-
     --card: 140 40% 12%;
     --card-foreground: 140 20% 98%;
-
     --popover: 140 40% 12%;
     --popover-foreground: 140 20% 98%;
-
     --primary: 142 76% 36%;
     --primary-foreground: 0 0% 100%;
-    
     --primary-glow: 142 76% 46%;
-
     --secondary: 140 30% 18%;
     --secondary-foreground: 140 20% 98%;
-
     --muted: 140 30% 18%;
     --muted-foreground: 140 20% 70%;
-
     --accent: 168 76% 42%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 63% 31%;
     --destructive-foreground: 140 20% 98%;
-
     --border: 140 35% 20%;
     --input: 140 35% 20%;
     --ring: 142 76% 36%;
-    
     --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
     --gradient-hero: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(152 70% 42%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(140 40% 12%) 0%, hsl(140 35% 15%) 100%);
-    
     --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
     --shadow-lg: 0 10px 15px -3px hsl(142 76% 36% / 0.2), 0 4px 6px -2px hsl(142 76% 36% / 0.1);
     --shadow-glow: 0 0 40px hsl(142 76% 36% / 0.2);
   }
-}
 
-@layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }

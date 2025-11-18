@@ -1,10 +1,11 @@
 @import "tailwindcss";
-@config "@/../tailwind.config.js";
+@import "tw-animate-css";
+/* @config "@/../tailwind.config.js";
+@reference "tailwindcss";  */
 
-/* Individuals for Shadcn Components Begin Here */
-/* Place any custom styling here */
+
 .dashboard-container {
-  @apply space-y-6 animate-fade-in;
+  @apply space-y-6;
 }
 
 .dashboard-header {
