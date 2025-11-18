@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import "@/Pages/Dashboards/Dashboard.css";
 
 
 const StatsCard = ({ 

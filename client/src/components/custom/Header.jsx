@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { LogOut, Building2 } from "lucide-react";
+import "@/Pages/Dashboards/Dashboard.css";
 
 const Header = ({ roleTitle, employeeId, onLogout }) => {
   return (

@@ -1,5 +1,5 @@
 import StatsCard from "./StatsCard";
-
+import "@/Pages/Dashboards/Dashboard.css";
 
 const StatsGrid = ({ stats }) => {
   return (
