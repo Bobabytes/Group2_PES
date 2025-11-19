@@ -16,7 +16,7 @@ const QuickActions = ({ actions }) => {
       <CardContent className="list-card-content">
         <div className="quick-actions-grid">
           {actions.map((action, index) => (
-            <Button key={index} variant="outline" className="quick-action-button">
+            <Button key={index} variant="outline" className="quick-action-button cursor-pointer" onClick={action.onClick}>
               {action.label}
             </Button>
           ))}

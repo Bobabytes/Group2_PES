@@ -1,11 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-/* @config "@/../tailwind.config.js";
-@reference "tailwindcss";  */
+@reference "../../index.css";
 
+/* Ignore the warnings */
+/* Dashboard Component Styles */
 
 .dashboard-container {
-  @apply space-y-6;
+  @apply space-y-6 animate-fade-in;
 }
 
 .dashboard-header {
@@ -38,7 +39,7 @@
 }
 
 .stats-card-title {
-  @apply text-sm font-medium text-muted-foreground;
+  @apply text-2xl font-medium text-muted-foreground;
 }
 
 .stats-card-value {
@@ -93,4 +94,7 @@
 
 .quick-action-button {
   @apply h-auto flex-col gap-2 p-6;
+}
+.quick-action-icon {
+  @apply h-8 w-8;
 }

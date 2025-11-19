@@ -2,6 +2,7 @@ import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
 
 const EmployeeDashboard = () => {
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
@@ -47,8 +48,8 @@ const EmployeeDashboard = () => {
   ];
   // QUICK BUTTONS: FUNCTIONALITY CHANGES PER ROLE
   const quickActions = [
-    { label: "View Payslips" },
-    { label: "Request Leave" },
+    { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
+    { label: "Request Leave", onClick: () => toast.info("Leave request coming soon!") },
   ];
 
   return (
