@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { LogOut, Building2 } from "lucide-react";
+import "@/Pages/Dashboards/Dashboard.css";
 
 const Header = ({ roleTitle, employeeId, onLogout }) => {
   return (
@@ -18,7 +19,7 @@ const Header = ({ roleTitle, employeeId, onLogout }) => {
         <Button 
           variant="outline" 
           onClick={onLogout}
-          className="gap-2"
+          className="gap-2 cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           Logout

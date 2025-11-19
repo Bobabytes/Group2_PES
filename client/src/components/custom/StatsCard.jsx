@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import "@/Pages/Dashboards/Dashboard.css";
 
 
 const StatsCard = ({ 
@@ -12,8 +13,8 @@ const StatsCard = ({
   return (
     <Card className={`stats-card border-l-4 ${borderColor}`}>
       <CardHeader className="stats-card-header space-y-0 pb-2">
+        <Icon className={`h-10 w-10 pb-1 ${iconColor}`} />
         <CardTitle className="stats-card-title">{title}</CardTitle>
-        <Icon className={`h-4 w-4 ${iconColor}`} />
       </CardHeader>
       <CardContent>
         <div className="stats-card-value">{value}</div>
