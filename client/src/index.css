@@ -121,7 +121,7 @@
 /* Individuals for Shadcn Components Begin Here */
 /* Place any custom styling here */
 .dashboard-container {
-  @apply space-y-6 animate-fade-in;
+  @apply space-y-6;
 }
 
 .dashboard-header {
@@ -136,9 +136,9 @@
   @apply text-muted-foreground;
 }
 
-.dashboard-action-button {
+/*.dashboard-action-button {
   @apply gap-2 bg-gradient-primary shadow-md hover:opacity-90;
-}
+}*/
 
 /* Stats Card Styles */
 .stats-grid {

@@ -67,6 +67,26 @@ app.post("/login", (req, res) => {
   });
 });
 
+// --- Leave Request ---
+app.post("/api/leave-request", (req, res) => {
+  const { usersId, leaveType, startDate, endDate, reason } = req.body;
+
+  if (!usersId || !leaveType || !startDate || !endDate || !reason) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  const insert = Database.prepare(`INSERT INTO LeaveRequests (users_id, leave_type, start_date, end_date, reason) VALUES (?, ?, ?, ?, ?)`);
+
+  db.run(sql, [usersId, leaveType, startDate, endDate, reason], function (err) {
+    if (err) {
+      console.error("DB Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }});
+
+  res.json({ message: "Leave request submitted", leaveId: this.lastID });
+
+});
+
 // --- Start Server ---
 app.listen(8080, () => {
   console.log("✅ Server started on http://localhost:8080");
