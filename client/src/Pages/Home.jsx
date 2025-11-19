@@ -3,6 +3,7 @@ import axios from "axios";
 import Header from "../components/custom/Header";
 import EmployeeDashboard from "./Dashboards/EmployeeDashboard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 function Home() {
   const navigate = useNavigate();
@@ -32,13 +33,21 @@ function Home() {
     
     setRole(savedRole);
     setEmployeeId(savedId);
+    setIsLoading(false);
   }, [navigate]);
 
   const handleLogout = () => {
+    // WELL AT LEAST THIS WORKS
+    toast.info("Logging out...");
+    try {
     localStorage.removeItem("userRole");
     localStorage.removeItem("employeeId");
-    toast.success("Logged out successfully");
-    navigate("");
+    localStorage.clear();
+    navigate("/");
+    // I can't ADD A TOAST HERE IDK WHY DOLFMSDNFGSKANEDFGKSNAKFNKADNSFKN
+    } catch (error) {
+      toast.error("Error during logout. Please try again.");
+    }
   };
 
   const getRoleTitle = () => {

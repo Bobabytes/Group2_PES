@@ -10,7 +10,7 @@ const QuickActions = ({ actions }) => {
       <CardHeader className="list-card-header">
         <CardTitle className="flex items-center gap-2">
           <Plus className="w-5 h-5" />
-          Quick Actions
+          Actions
         </CardTitle>
       </CardHeader>
       <CardContent className="list-card-content">
