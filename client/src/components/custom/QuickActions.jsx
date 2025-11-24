@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import "@/Pages/Dashboards/Dashboard.css";
 
-
 const QuickActions = ({ actions }) => {
   return (
     <Card className="list-card">
@@ -13,13 +12,21 @@ const QuickActions = ({ actions }) => {
           Actions
         </CardTitle>
       </CardHeader>
+
       <CardContent className="list-card-content">
         <div className="quick-actions-grid">
-          {actions.map((action, index) => (
-            <Button key={index} variant="outline" className="quick-action-button cursor-pointer" onClick={action.onClick}>
-              {action.label}
-            </Button>
-          ))}
+          {actions.map((action, index) => {
+            if (action.component) 
+            {
+              const Component = action.component;
+              return <Component key={index} />;
+            }
+            return (
+              <Button
+                key={index} variant="outline" className="quick-action-button cursor-pointer" onClick={action.onClick}> {action.label}
+              </Button>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
