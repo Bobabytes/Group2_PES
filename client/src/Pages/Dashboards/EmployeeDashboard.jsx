@@ -2,8 +2,7 @@ import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
-//import { useCallback } from "react";
-//import { json } from "stream/consumers";
+import { toast } from "sonner";
 
 const EmployeeDashboard = () => {
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
@@ -49,22 +48,9 @@ const EmployeeDashboard = () => {
   ];
   // QUICK BUTTONS: FUNCTIONALITY CHANGES PER ROLE
   const quickActions = [
-    { label: "View Payslips" },
-    { label: "Request Leave", action: "requestLeave" },
+    { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
+    { label: "Request Leave", onClick: () => toast.info("Leave request coming soon!") },
   ];
-
-
-  const handleQuickAction = useCallBack(async (action) => {
-     if (action === "requestLeave") {
-      const leaveType = window.prompt("Leave type (e.g. Annual, Sick, Unpaid):");
-      if (!leaveType) return;
-
-      const startDate = window.prompt("Start date (YYYY-MM-DD):");
-      if (!startDate) return;
-
-      const endDate = window.prompt("End date (YYYY-MM-DD):");
-      if (!endDate) return;
-  }
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -76,7 +62,7 @@ const EmployeeDashboard = () => {
         <QuickActions actions={quickActions} />
       </div>
     </div>
-  )});
+  );
 };
 
 export default EmployeeDashboard;

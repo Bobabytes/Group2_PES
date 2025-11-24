@@ -3,6 +3,7 @@ import axios from "axios";
 import Header from "../components/custom/Header";
 import EmployeeDashboard from "./Dashboards/EmployeeDashboard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 function Home() {
   const navigate = useNavigate();
@@ -32,13 +33,31 @@ function Home() {
     
     setRole(savedRole);
     setEmployeeId(savedId);
+    setIsLoading(false);
   }, [navigate]);
 
   const handleLogout = () => {
+    // WELL AT LEAST THIS WORKS
+    toast.info("Logging out...");
+    try {
     localStorage.removeItem("userRole");
     localStorage.removeItem("employeeId");
-    toast.success("Logged out successfully");
+    localStorage.clear();
     navigate("/");
+    // I can't ADD A TOAST HERE IDK WHY DOLFMSDNFGSKANEDFGKSNAKFNKADNSFKN
+    } catch (error) {
+      toast.error("Error during logout. Please try again.");
+    }
+  };
+
+  const getRoleTitle = () => {
+    switch (role.toLowerCase()) {
+      case "employee": return "Employee Portal";
+      case "hr": return "HR Management";
+      case "finance": return "Finance Dashboard";
+      case "administrator": return "Administrator Portal";
+      default: return "Dashboard";
+    }
   };
 
   return (
@@ -46,6 +65,9 @@ function Home() {
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5">
       {/* HEADER NEEDS VARIABLES AND LOGOUT FUNCTION PASSED -P*/}
       <Header
+        roleTitle={getRoleTitle()}
+        employeeId={employeeId}
+        onLogout={handleLogout}
       />
       <div className="p-6 m-4">
         <h1 className="text-3xl font-bold mb-4">Home</h1>
@@ -53,8 +75,8 @@ function Home() {
         {role && (
           <div className="mb-4">
             <p className="text-lg font-medium">
-              {role.toLowerCase() === "hr" && "HR.jsx would go here."}
               {role.toLowerCase() === "employee" && <EmployeeDashboard />}
+              {role.toLowerCase() === "hr" && "HR.jsx would go here."}
               {role.toLowerCase() === "finance" && "💰 This is the Finance page — manage company payments."}
               {role.toLowerCase() === "administrator" && "🛠️ This is the Admin dashboard — full system access."}
             </p>
