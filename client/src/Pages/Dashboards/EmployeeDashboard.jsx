@@ -56,7 +56,7 @@ const EmployeeDashboard = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">This is the employee dashboard.</h1>
+      <h1 className="text-3xl font-bold mb-4"></h1>
       <StatsGrid stats={stats} />
       
       <div className="grid gap-6 md:grid-cols-2">
