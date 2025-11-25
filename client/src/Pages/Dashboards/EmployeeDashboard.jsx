@@ -46,7 +46,8 @@ const EmployeeDashboard = () => {
     { month: "February 2024", amount: 5400, status: "Paid" },
     { month: "January 2024", amount: 5200, status: "Paid" },
   ];
-  // QUICK BUTTONS: FUNCTIONALITY CHANGES PER ROLE
+  // Actions: Implement functionality here later.
+  // Ideally the functionality would be in a function above this
   const quickActions = [
     { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
     { label: "Request Leave", onClick: () => toast.info("Leave request coming soon!") },
@@ -54,7 +55,7 @@ const EmployeeDashboard = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">This is the employee dashboard.</h1>
+      <h1 className="text-3xl font-bold mb-4">Welcome back.</h1>
       <StatsGrid stats={stats} />
       
       <div className="grid gap-6 md:grid-cols-2">
