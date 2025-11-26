@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   position TEXT
 );
 
-CREATE TABLE IF NOT EXISTS LeaveRequests (
+CREATE TABLE IF NOT EXISTS EmployeeLeaves (
   leave_id INTEGER PRIMARY KEY AUTOINCREMENT,
   users_id INTEGER NOT NULL,
   leave_type TEXT NOT NULL,

@@ -69,22 +69,40 @@ app.post("/login", (req, res) => {
 
 // --- Leave Request ---
 app.post("/api/leave-request", (req, res) => {
-  const { usersId, leaveType, startDate, endDate, reason } = req.body;
+  const { usersId, leaveType, startDate, endDate} = req.body;
 
-  if (!usersId || !leaveType || !startDate || !endDate || !reason) {
-    return res.status(400).json({ message: "Missing fields" });
+  if (!usersId || !leaveType || !startDate || !endDate) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
-  const insert = Database.prepare(`INSERT INTO LeaveRequests (users_id, leave_type, start_date, end_date, reason) VALUES (?, ?, ?, ?, ?)`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  db.run(sql, [usersId, leaveType, startDate, endDate, reason], function (err) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start <= today) {
+    return res.status(400).json({ message: "Start date must be after today" });
+  }
+  if (end <= start) {
+    return res.status(400).json({ message: "End date must be after the start date" });
+  }
+
+  const sql = `
+    INSERT INTO EmployeeLeaves (users_id, leave_type, start_date, end_date)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.run(sql, [usersId, leaveType, startDate, endDate], function (err) {
     if (err) {
       console.error("DB Error:", err);
       return res.status(500).json({ message: "Database error" });
     }});
 
-  res.json({ message: "Leave request submitted", leaveId: this.lastID });
-
+  return res.status(201).json({
+    message: "Leave request successfully submitted!",
+    leaveId: this.lastID,
+  });
 });
 
 // --- Start Server ---

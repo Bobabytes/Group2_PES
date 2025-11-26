@@ -4,18 +4,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import { useState } from "react";
+
 export default function LeaveRequestDialog() {
   const [leaveType, setLeaveType] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState("");  
-  
-  const todayStr = new Date().toISOString().split("T")[0]; // yyyy-mm-dd for <input type="date">
 
-  const handleSubmit = (e) => {
+  
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
 
   if (!leaveType || !startDate || !endDate) {
     setError("Please fill in all fields.");
@@ -42,8 +43,33 @@ export default function LeaveRequestDialog() {
       startDate,
       endDate,
   });
+  
 
-  };
+  try {
+    const res = await fetch("http://localhost:8080/api/leave-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usersId: 1, // TODO: replace with user id
+          leaveType,
+          startDate,
+          endDate,
+        }),
+    });
+
+  if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.message || "Failed to submit leave request.");
+      return;
+  }
+  toast.success("Leave request submitted successfully!");
+
+ } catch (err) {
+    setError("Network error. Please try again later.");
+    return;
+  }
+};
+
 
   return (
     <Dialog>
@@ -63,30 +89,44 @@ export default function LeaveRequestDialog() {
 
         <form onSubmit={handleSubmit} className="grid gap-4">
         <div className="grid gap-3">
-          <div className="grid gap-4">
             <Label htmlFor="leave-type">Leave type</Label>
               <Select name="leaveType" value={leaveType} onValueChange={setLeaveType}>
+                
                 <SelectTrigger id="leave-type">
                   <SelectValue placeholder="Select leave type" />
                 </SelectTrigger>
+
                   <SelectContent>
                     <SelectItem value="annual">Annual Leave</SelectItem>
                     <SelectItem value="sick">Sick Leave</SelectItem>
                   </SelectContent>
               </Select>
           </div>
+
           <div className="grid gap-3">
             <Label htmlFor="start">Start date</Label>
             <Input id="start" name="startDate" type="date" min={todayStr} value={startDate} onChange={(e) => setStartDate(e.target.value)}/>
           </div>
+
           <div className="grid gap-3">
             <Label htmlFor="end">End date</Label>
-            <Input id="end" name="endDate" type="date" min={startDate || todayStr} value={endDate} onChange={(e) => setEndDate(e.target.value)}/>
+            <Input id="end" name="endDate" type="date" min={
+              startDate
+                ? new Date(
+                    new Date(startDate).getTime() + 24 * 60 * 60 * 1000
+                  )
+                    .toISOString()
+                    .split("T")[0]
+                : todayStr
+            }
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
           </div>
           {error && (
             <p className="text-sm text-red-600"> {error}</p>
           )}
-        </div>
+        
 
         <DialogFooter>
           <DialogClose asChild>
@@ -97,5 +137,5 @@ export default function LeaveRequestDialog() {
         </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
