@@ -4,7 +4,7 @@ import QuickActions from "@/components/custom/QuickActions";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
-const EmployeeDashboard = () => {
+const AdministratorDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
   
 
@@ -58,15 +58,15 @@ const EmployeeDashboard = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Welcome back.</h1>
+      <h1 className="text-3xl font-bold mb-4">Welcome back, (Name).</h1>
       <StatsGrid stats={stats} />
       
       <div className="grid gap-6 md:grid-cols-2">
         <PayslipList payslips={payslips} title="Personal Payslips" />
-        <QuickActions actions={quickActions} title="Employee Actions" />
+        <QuickActions actions={quickActions} title="Administrator Actions" />
       </div>
     </div>
   );
 };
 
-export default EmployeeDashboard;
+export default AdministratorDashboard;

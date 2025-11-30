@@ -12,7 +12,7 @@ const HRDashboard = () => {
     {
       title: "Total Employees",
       value: "100 (Mock)",
-      description: "A test Description",
+      description: "Total number of employees (Fetch total employees)",
       icon: Users,
       borderColor: "border-l-primary",
       iconColor: "text-primary"
@@ -20,7 +20,7 @@ const HRDashboard = () => {
     {
       title: "On Leave Today",
       value: "12 (Mock)",
-      description: "Across all departments",
+      description: "Across all departments (Fetch all users on leave on current day)",
       icon: Clock,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
@@ -28,7 +28,7 @@ const HRDashboard = () => {
     {
       title: "Pending Approvals",
       value: "5 (Mock)",
-      description: "A test Description",
+      description: "Leave requests pending your approval (Fetch all pending requests)",
       icon: UserCheck,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
@@ -36,7 +36,7 @@ const HRDashboard = () => {
     {
       title: "Leave Balance",
       value: "12 Days (Mock)",
-      description: "Available this year",
+      description: "Available this year (Fetch current user's available leaves)",
       icon: UserPen,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
@@ -64,8 +64,8 @@ const HRDashboard = () => {
       <h1 className="text-3xl font-bold mb-4">Welcome back, HR.</h1>
       <StatsGrid stats={stats} />
       <div className="grid gap-6 md:grid-cols-2">
-        <LeaveRequestList requests={leaveRequests} />
-        <QuickActions actions={quickActions} />
+        <LeaveRequestList requests={leaveRequests} title="Leave Requests" />
+        <QuickActions actions={quickActions} title="HR Team Actions" />
       </div>
     </div>
   );

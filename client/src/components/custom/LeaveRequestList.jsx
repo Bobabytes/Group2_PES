@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import "@/Pages/Dashboards/Dashboard.css";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Mouse, MousePointerClick, Plus, BookUser } from "lucide-react";
 
 const LeaveRequestList = ({ requests }) => {
@@ -12,6 +13,7 @@ const LeaveRequestList = ({ requests }) => {
           Employee Leave Requests
         </CardTitle>
       </CardHeader>
+      <ScrollArea style={{ height: '400px' }}>
       <CardContent className="list-card-content">
         <div className="space-y-4">
           {requests.map((request, index) => (
@@ -29,6 +31,7 @@ const LeaveRequestList = ({ requests }) => {
           ))}
         </div>
       </CardContent>
+      </ScrollArea>
     </Card>
   );
 };
