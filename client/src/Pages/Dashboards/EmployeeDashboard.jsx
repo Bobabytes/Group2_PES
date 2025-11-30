@@ -5,6 +5,9 @@ import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 const EmployeeDashboard = () => {
+  // DATABASE QUERY: Fetch Employee Details here
+  
+
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
   const stats = [
     {
