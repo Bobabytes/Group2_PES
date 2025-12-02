@@ -53,7 +53,12 @@ const AdministratorDashboard = () => {
   // Ideally the functionality would be in a function above this
   const quickActions = [
     { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
-    { label: "Request Leave", onClick: () => toast.info("Leave request coming soon!") },
+    { label: "Submit Personal Leave Request", onClick: () => toast.info("Personal Leave request coming soon! (Port from Emp)") },
+    { label: "Manage Employee Leave Requests", onClick: () => toast.info("Employee Leave Management coming soon!") },
+    { label: "Add/Remove Employee", onClick: () => toast.info("Employee List Management coming soon!") },
+    { label: "Update Employee Details", onClick: () => toast.info("Employee Details Update coming soon!") },
+    { label: "Manage Payroll Report", onClick: () => toast.info("Payroll processing coming soon!") },
+    { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
   ];
 
   return (
