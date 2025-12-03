@@ -21,6 +21,16 @@ CREATE TABLE payslips (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS EmployeeLeaves (
+  leave_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  users_id INTEGER NOT NULL,
+  leave_type TEXT NOT NULL,
+  start_date TEXT NOT NULL,
+  end_date TEXT NOT NULL,
+  status TEXT DEFAULT 'Pending',
+  FOREIGN KEY (users_id) REFERENCES users(id)
+);
+
 -- Insert test users
 INSERT INTO users (username, password, position) VALUES 
 ('john', '123', 'Employee'),
