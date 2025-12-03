@@ -53,7 +53,7 @@ function Login() {
         selectedRole: role,
       });
 
-      const { actualRole, warning } = response.data;
+      const { id, actualRole, leaves, warning } = response.data;
 
       if (warning) {
         toast.warning(warning);
@@ -61,13 +61,23 @@ function Login() {
         toast.success("Login successful!");
       }
 
-      // Save confirmed role
+      console.log("User from DB:", user); 
       localStorage.setItem("selectedRole", role);
       localStorage.setItem("userRole", actualRole);
       localStorage.setItem("employeeId", employeeId);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+        id,
+        role: actualRole,
+        leaves,
+        username: employeeId,
+      })
+);
 
       navigate("/home");
-    } catch (error) {
+    } catch (error) 
+    {
       toast.error(error.response?.data?.message || "Login failed.");
     }
   };

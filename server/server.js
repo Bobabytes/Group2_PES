@@ -61,7 +61,9 @@ app.post("/login", (req, res) => {
 
     res.json({
       message: "Login successful",
+      id: user.id,
       actualRole: user.position,
+      leaves: user.leaves,
       warning,
     });
   });
@@ -97,11 +99,12 @@ app.post("/api/leave-request", (req, res) => {
     if (err) {
       console.error("DB Error:", err);
       return res.status(500).json({ message: "Database error" });
-    }});
-
-  return res.status(201).json({
+    }
+    
+    return res.status(201).json({
     message: "Leave request successfully submitted!",
     leaveId: this.lastID,
+  });
   });
 });
 

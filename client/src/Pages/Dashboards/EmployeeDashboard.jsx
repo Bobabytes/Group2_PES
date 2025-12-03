@@ -1,5 +1,5 @@
 // components/custom/EmployeeDashboard.jsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
@@ -10,7 +10,25 @@ import { toast } from "sonner";
 
 
 const EmployeeDashboard = () => {
-  
+
+  const [leaveBalance, setLeaveBalance] = useState(0);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        const user = JSON.parse(stored);
+        if (user.leaves != null) {
+          setLeaveBalance(user.leaves);
+        }
+      }
+    } catch (err) {
+      console.error("Error reading user from localStorage:", err);
+    }
+  }, []);
+
+
+
   const stats = [
     {
       title: "Current Salary",
@@ -38,7 +56,7 @@ const EmployeeDashboard = () => {
     },
     {
       title: "Leave Balance",
-      value: "12 days",
+      value: `${leaveBalance} days`,
       description: "Available this year",
       icon: FileText,
       borderColor: "border-l-accent",

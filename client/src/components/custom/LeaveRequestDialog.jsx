@@ -50,7 +50,7 @@ export default function LeaveRequestDialog() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          usersId: 1, // TODO: replace with user id
+          usersId: 1,
           leaveType,
           startDate,
           endDate,
