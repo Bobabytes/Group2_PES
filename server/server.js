@@ -67,6 +67,19 @@ app.post("/login", (req, res) => {
   });
 });
 
+// FETCH EMPLOYEE DASHBOARD ROUTE
+app.get("/emp", (req,res) => {
+  res.json({ bees: ["dalskdfsdf", "1234", "aaaaa"] });
+});
+
+// FETCH HR DASHBOARD ROUTE
+
+
+// FETCH FINANCE DASHBOARD ROUTE
+
+
+// FETCH ADMIN DASHBOARD ROUTE
+
 // --- Start Server ---
 app.listen(8080, () => {
   console.log("✅ Server started on http://localhost:8080");
