@@ -1,7 +1,8 @@
+// components/custom/PayslipPDFViewer.jsx
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download, X, AlertCircle, RefreshCw, ZoomIn, ZoomOut } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { toast } from "sonner";
 
 const PayslipPDFViewer = ({ 
@@ -15,7 +16,16 @@ const PayslipPDFViewer = ({
   const [isLoading, setIsLoading] = useState(true);
   const [zoom, setZoom] = useState(1.0);
 
-  // Enhanced PDF URL with parameters to hide controls and improve display
+  // Reset state when component opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoading(true);
+      setPdfError(false);
+      setZoom(1.0);
+    }
+  }, [isOpen]);
+
+  // Enhanced PDF URL
   const enhancedPdfUrl = pdfUrl ? `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH` : '';
 
   const handlePdfLoad = () => {
@@ -35,7 +45,6 @@ const PayslipPDFViewer = ({
         throw new Error("No PDF URL available");
       }
       
-      // Direct download instead of opening in new tab
       const link = document.createElement('a');
       link.href = pdfUrl;
       link.download = fileName || 'payslip.pdf';
@@ -67,10 +76,12 @@ const PayslipPDFViewer = ({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-6xl h-[90vh] flex flex-col">
-        {/* Custom Header with only ONE X button */}
+        {/* Custom Header */}
         <div className="flex items-center justify-between p-6 pb-0">
           <div className="flex items-center gap-4 flex-1">
-            <span className="text-lg font-semibold truncate max-w-[300px]">{fileName}</span>
+            <span className="text-lg font-semibold truncate max-w-[300px]">
+              {fileName || "Payslip"}
+            </span>
             {payslipData && (
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>Month: {payslipData.month}</span>
@@ -87,14 +98,13 @@ const PayslipPDFViewer = ({
               </div>
             )}
           </div>
-          {/* Only ONE custom X button */}
           <Button variant="ghost" size="sm" onClick={handleClose} className="flex-shrink-0">
             <X className="w-4 h-4" />
           </Button>
         </div>
         
         <div className="flex-1 flex flex-col min-h-0 p-6 pt-4">
-          {/* PDF viewer with error handling */}
+          {/* PDF viewer */}
           <div className="flex-1 border rounded-lg relative min-h-0 bg-gray-100">
             {isLoading && !pdfError && (
               <div className="absolute inset-0 flex items-center justify-center bg-background/50 z-10">
@@ -110,7 +120,7 @@ const PayslipPDFViewer = ({
                 <AlertCircle className="w-16 h-16 text-destructive mb-4" />
                 <p className="text-lg font-medium mb-2">Failed to Load PDF</p>
                 <p className="text-sm text-center mb-4">
-                  The payslip PDF could not be loaded. This may be due to network issues or an invalid file.
+                  The payslip PDF could not be loaded.
                 </p>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={handleRetry}>
@@ -128,7 +138,7 @@ const PayslipPDFViewer = ({
                 <iframe 
                   src={enhancedPdfUrl}
                   className="w-full h-full"
-                  title={fileName}
+                  title={fileName || "Payslip PDF"}
                   onLoad={handlePdfLoad}
                   onError={handlePdfError}
                   style={{ 
