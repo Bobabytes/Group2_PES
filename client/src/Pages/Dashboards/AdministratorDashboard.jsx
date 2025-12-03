@@ -1,7 +1,7 @@
 import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
-import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
+import { DollarSign, Calendar, FileText, TrendingUp, Users, Clock, Shield, UserCheck, UserPen, AlertCircle, CircleDollarSign, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 const AdministratorDashboard = () => {
@@ -10,6 +10,73 @@ const AdministratorDashboard = () => {
 
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
   const stats = [
+    {
+      title: "Total Employees",
+      value: "100 (Mock)",
+      description: "Total number of employees (Fetch total employees)",
+      icon: Users,
+      borderColor: "border-l-primary",
+      iconColor: "text-primary"
+    },
+    {
+      title: "On Leave Today",
+      value: "12 (Mock)",
+      description: "Across all departments (Fetch all users on leave on current day)",
+      icon: UserCheck,
+      borderColor: "border-l-accent",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Pending Approvals",
+      value: "5 (Mock)",
+      description: "Leave requests pending your approval (Fetch all pending requests)",
+      icon: UserPen,
+      borderColor: "border-l-accent",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Attendance Rate",
+      value: "94.5%",
+      description: "This month",
+      icon: TrendingUp,
+      borderColor: "border-l-primary",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Payroll Report",
+      value: "$750,000 (Mock)",
+      description: "Total payroll (Fetch from most recent finance log, which'll have a summation of all user salaries; don't calculate it here that's too costly im SERIOUS)",
+      icon: CircleDollarSign,
+      borderColor: "border-l-primary",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Processed Payments",
+      value: "70 (Mock)",
+      description: "Processed this month (Fetch from payslips marked as paid in the current month ig)",
+      icon: CheckCircle2,
+      borderColor: "border-l-accent",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Pending Payments",
+      value: "30 (Mock)",
+      description: "Pending salary payments (Fetch from payslips set as pending)",
+      icon: AlertCircle,
+      borderColor: "border-l-accent",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Budget Utilization",
+      value: "75% (Mock)",
+      description: "YTD vs Budget (Divide fetched payroll report by annual budget from finance logs idk im not an economist also this might be calced and saved in payroll db)",
+      icon: TrendingUp,
+      borderColor: "border-l-accent",
+      iconColor: "text-primary"
+    },
+  ];
+
+  const personalStats = [
     {
       title: "Current Salary",
       value: "$5,400 (Mock)",
@@ -43,6 +110,8 @@ const AdministratorDashboard = () => {
       iconColor: "text-accent"
     },
   ];
+
+
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
   const payslips = [
     { month: "March 2024", amount: 5400, status: "Not Paid" },
@@ -63,13 +132,15 @@ const AdministratorDashboard = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Welcome back, (Name).</h1>
+      <h1 className="text-3xl font-bold mb-4">Welcome back, (Name). You are an Administrator.</h1>
       <StatsGrid stats={stats} />
       
       <div className="grid gap-6 md:grid-cols-2">
         <PayslipList payslips={payslips} title="Personal Payslips" />
         <QuickActions actions={quickActions} title="Administrator Actions" />
       </div>
+      <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
+      <StatsGrid stats={personalStats} />
     </div>
   );
 };

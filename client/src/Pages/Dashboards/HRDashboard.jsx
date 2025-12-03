@@ -21,7 +21,7 @@ const HRDashboard = () => {
       title: "On Leave Today",
       value: "12 (Mock)",
       description: "Across all departments (Fetch all users on leave on current day)",
-      icon: Clock,
+      icon: UserCheck,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
     },
@@ -29,7 +29,7 @@ const HRDashboard = () => {
       title: "Pending Approvals",
       value: "5 (Mock)",
       description: "Leave requests pending your approval (Fetch all pending requests)",
-      icon: UserCheck,
+      icon: UserPen,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
     },
@@ -37,7 +37,7 @@ const HRDashboard = () => {
       title: "Leave Balance",
       value: "12 Days (Mock)",
       description: "Available this year (Fetch current user's available leaves)",
-      icon: UserPen,
+      icon: FileText,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
     },

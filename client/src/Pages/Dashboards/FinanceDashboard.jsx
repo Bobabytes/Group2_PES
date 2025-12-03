@@ -22,18 +22,18 @@ const FinanceDashboard = () => {
       iconColor: "text-primary"
     },
     {
-      title: "Pending Payments",
-      value: "30 (Mock)",
-      description: "Pending salary payments (Fetch from payslips set as pending)",
-      icon: AlertCircle,
-      borderColor: "border-l-accent",
-      iconColor: "text-primary"
-    },
-    {
       title: "Processed Payments",
       value: "70 (Mock)",
       description: "Processed this month (Fetch from payslips marked as paid in the current month ig)",
       icon: CheckCircle2,
+      borderColor: "border-l-accent",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Pending Payments",
+      value: "30 (Mock)",
+      description: "Pending salary payments (Fetch from payslips set as pending)",
+      icon: AlertCircle,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
     },
@@ -44,6 +44,41 @@ const FinanceDashboard = () => {
       icon: TrendingUp,
       borderColor: "border-l-accent",
       iconColor: "text-primary"
+    },
+  ];
+
+  const personalStats = [
+    {
+      title: "Current Salary",
+      value: "$5,400 (Mock)",
+      description: "Monthly Gross Pay (Fetch from employee salary details)",
+      icon: DollarSign,
+      borderColor: "border-l-primary",
+      iconColor: "text-primary"
+    },
+    {
+      title: "Next Payment",
+      value: "March 31, 2025 (Mock)",
+      description: "{x} Days Remaining (Fetch from payment schedule - current date)",
+      icon: Calendar,
+      borderColor: "border-l-accent",
+      iconColor: "text-accent"
+    },
+    {
+      title: "YTD Earnings",
+      value: "$16,200 (Mock)",
+      description: "Year to date (Fetch from employee earnings records)",
+      icon: TrendingUp,
+      borderColor: "border-l-accent",
+      iconColor: "text-secondary-foreground"
+    },
+    {
+      title: "Leave Balance",
+      value: "12 days (Mock)",
+      description: "Available this year (Fetch current user's available leaves)",
+      icon: FileText,
+      borderColor: "border-l-accent",
+      iconColor: "text-accent"
     },
   ];
   // INHERITED FROM EMPLOYEE DASHBOARD
@@ -96,6 +131,8 @@ const FinanceDashboard = () => {
         <PayslipList payslips={payslips} title="Personal Payslips" />
         <QuickActions actions={quickActions} title="Finance Team Actions" />
       </div>
+      <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
+      <StatsGrid stats={personalStats} />
     </div>
   );
 };
