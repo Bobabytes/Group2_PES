@@ -19,7 +19,7 @@ const Header = ({ roleTitle, employeeId, onLogout }) => {
         <Button 
           variant="outline" 
           onClick={onLogout}
-          className="gap-2 cursor-pointer"
+          className="gap-2 cursor-pointer font-semibold text-white bg-gradient-primary transition-all hover:scale-95 hover:shadow-md"
         >
           <LogOut className="w-4 h-4" />
           Logout

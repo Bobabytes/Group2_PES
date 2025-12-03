@@ -4,6 +4,9 @@ import Header from "../components/custom/Header";
 import EmployeeDashboard from "./Dashboards/EmployeeDashboard";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import HRDashboard from "./Dashboards/HRDashboard";
+import FinanceDashboard from "./Dashboards/FinanceDashboard";
+import AdministratorDashboard from "./Dashboards/AdministratorDashboard";
 
 function Home() {
   const navigate = useNavigate();
@@ -76,9 +79,9 @@ function Home() {
           <div className="mb-4">
             <p className="text-lg font-medium">
               {role.toLowerCase() === "employee" && <EmployeeDashboard />}
-              {role.toLowerCase() === "hr" && "HR.jsx would go here."}
-              {role.toLowerCase() === "finance" && "💰 This is the Finance page — manage company payments."}
-              {role.toLowerCase() === "administrator" && "🛠️ This is the Admin dashboard — full system access."}
+              {role.toLowerCase() === "hr" && <HRDashboard />}
+              {role.toLowerCase() === "finance" && <FinanceDashboard />}
+              {role.toLowerCase() === "administrator" && <AdministratorDashboard />}
             </p>
           </div>
         )}
@@ -89,7 +92,7 @@ function Home() {
           <button onClick={() => setCount((count) => count + 1)}>
             CLICK HERE! Count is {count}
           </button>
-          <p>Home : Employee. Lots to do.</p>
+          <p>Home. Lots to do.</p>
         </div>
         <p className="read-the-docs mb-2">
           Debug: If you can see fruits, backend is working

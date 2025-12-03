@@ -1,26 +1,29 @@
+// components/custom/EmployeeDashboard.jsx
+import { useState } from "react";
 import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
+import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 
 const EmployeeDashboard = () => {
-  // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
+  
   const stats = [
     {
       title: "Current Salary",
       value: "$5,400",
-      description: "A test Description",
+      description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",
       iconColor: "text-primary"
     },
     {
-      title: "A test Title",
-      value: "Test Value",
-      description: "Test Description",
+      title: "Next Payment",
+      value: "March 31, 2025",
+      description: "Days remaining",
       icon: Calendar,
       borderColor: "border-l-accent",
       iconColor: "text-accent"
@@ -42,21 +45,28 @@ const EmployeeDashboard = () => {
       iconColor: "text-accent"
     },
   ];
-  // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
+
   const payslips = [
     { month: "March 2024", amount: 5400, status: "Not Paid" },
     { month: "February 2024", amount: 5400, status: "Paid" },
     { month: "January 2024", amount: 5200, status: "Paid" },
   ];
-  // QUICK BUTTONS: FUNCTIONALITY CHANGES PER ROLE
+
+ 
   const quickActions = [
-    { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
-    { label : "Submit Leave Request", component: LeaveRequestDialog,},
+    { 
+      label: "View Payslips", 
+      component: PayslipPDFViewer 
+    },
+    { 
+      label: "Submit Leave Request", 
+      component: LeaveRequestDialog
+    },
   ];
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4"></h1>
+      <h1 className="text-3xl font-bold mb-4">Employee Dashboard</h1>
       <StatsGrid stats={stats} />
       
       <div className="grid gap-6 md:grid-cols-2">

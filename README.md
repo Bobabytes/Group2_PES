@@ -1,10 +1,10 @@
 # Payment Enrollment System
 This project was made for a Software Engineering II course by Group 2.
 
-### Requirements
+## Requirements
 - Node.js and all dependencies installed on your machine(check npm install step). You can get the prebuilt Node.js installer from https://nodejs.org/en/download.
 
-### Installation
+## Installation
 ```sh
 # Step 0: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL> 
@@ -36,54 +36,6 @@ npm i sonner
 npm i radix-ui
 npm i next-themes
 ```
-### FAQ (& Known Bugs)
-1. "npm[___] is not digitally signed" - P.M(222378)
-
-Running this seems to have fixed it for me in Powershell as an admin:
-```sh 
-set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-### Credits 
-
-This project is built with:
-- Reactjs (tsx)
-- Nodejs
-- Vite
-- SQLite (To be added)
-- shadcn-ui (The entire /components/ library is from here)
-- Tailwind CSS (All of the styling is from here)
-- React Router Dom(You need to install this seperately from react idk -p.m.)
-- Tanstack React Query (Used in Login page)
-- Radix-UI
-- And others
-
-### Learning Resources
-
-- React Course Playlist, by Bro Code (https://www.youtube.com/playlist?list=PLZPZq0r_RZOMQArzyI32mVndGBZ3D99XQ)
-- Tailwind CSS v4 Full Course, by Javascript Mastery (https://youtu.be/6biMWgD6_JY)
-- Node.js Ultimate Beginner's Guide, by Fireship (https://youtu.be/ENrzD9HAZK4)
-- How to Create a React Frontend + Express/Node Backend Project, by How to Web Dev (https://youtu.be/yc_D8u7ETuw)
-- How to Create a Express/Node + React Project with Vite | Node Backend + React Frontend, by Arpan Neupane (https://youtu.be/mKmxc8TcWQ8)
-
-Boilerplate React + Vite Readme below.
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
 ## Connecting the database
 
 You will see a "database.db" file as well as a "database.sql" in the server folder. That is our database.
@@ -107,3 +59,51 @@ Open the database file from this branch on your DB browser and go to the browse 
 Try logging in using any credentials and let me know tomorrow what happens. Hope it works as intended.
 
 You can choose a role and then enter username + password. If the role is wrong, you will still login but once inside you will be directed to the correct page (i.e HR page or Finance page) depending on your actual role. A message should also appear on the bottom right warning you to choose a correct role next time. This makes sure that the system fetches the data from the database and grants access if you have to login while also making sure that each employee sees only what their access rights grant them.
+
+## FAQ (& Known Bugs)
+1. "npm[___] is not digitally signed" - P.M(222378)
+
+Running this seems to have fixed it for me in Powershell as an admin:
+```sh 
+set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+## Credits 
+
+This project is built with:
+- Reactjs (tsx)
+- Nodejs
+- Vite
+- SQLite (To be added)
+- shadcn-ui (The entire /components/ library is from here)
+- Tailwind CSS (All of the styling is from here)
+- React Router Dom(You need to install this seperately from react idk -p.m.)
+- Tanstack React Query (Used in Login page)
+- Radix-UI
+- And others
+
+## Learning Resources
+
+- React Course Playlist, by Bro Code (https://www.youtube.com/playlist?list=PLZPZq0r_RZOMQArzyI32mVndGBZ3D99XQ)
+- Tailwind CSS v4 Full Course, by Javascript Mastery (https://youtu.be/6biMWgD6_JY)
+- Node.js Ultimate Beginner's Guide, by Fireship (https://youtu.be/ENrzD9HAZK4)
+- How to Create a React Frontend + Express/Node Backend Project, by How to Web Dev (https://youtu.be/yc_D8u7ETuw)
+- How to Create a Express/Node + React Project with Vite | Node Backend + React Frontend, by Arpan Neupane (https://youtu.be/mKmxc8TcWQ8)
+
+Boilerplate React + Vite Readme below.
+## React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

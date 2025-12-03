@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import "@/Pages/Dashboards/Dashboard.css";
 
 
@@ -13,6 +14,7 @@ const PayslipList = ({ payslips, title = "Recent Payslips" }) => {
           {title}
         </CardTitle>
       </CardHeader>
+      <ScrollArea style={{ height: '400px' }}>
       <CardContent className="list-card-content">
         <div className="space-y-4">
           {payslips.map((payslip, index) => (
@@ -30,6 +32,7 @@ const PayslipList = ({ payslips, title = "Recent Payslips" }) => {
           ))}
         </div>
       </CardContent>
+      </ScrollArea>
     </Card>
   );
 };
