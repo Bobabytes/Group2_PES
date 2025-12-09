@@ -73,7 +73,7 @@ export default function LeaveRequestDialog() {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+     <DialogTrigger asChild>
         <Button variant="outline" className="quick-action-button">
           Request Leave
         </Button>

@@ -7,6 +7,9 @@ import { DollarSign, Calendar, FileText, TrendingUp, Users, Clock, UserCheck, Us
 import { toast } from "sonner";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer";
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
+import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDialog";
+import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
+import ManageLeave from "@/components/custom/ManageLeave";
 
 const HRDashboard = () => {
   // MOCK DATA: REPLACE WITH DATABASE QUERIES INTO VARIABLES LATER 
@@ -56,9 +59,9 @@ const HRDashboard = () => {
   const quickActions = [
     { label: "View Payslips", component: PayslipPDFViewer },
     { label: "Submit Personal Leave Request",component : LeaveRequestDialog },
-    { label: "Manage Employee Leave Requests", onClick: () => toast.info("Employee Leave Management coming soon!") },
-    { label: "Add/Remove Employee", onClick: () => toast.info("Employee List Management coming soon!") },
-    { label: "Update Employee Details", onClick: () => toast.info("Employee Details Update coming soon!") },
+    { label: "Manage Employee Leave Requests", component : ManageLeave },
+    { label: "Add/Remove Employee", component : EmployeeManagementDialog },
+    { label: "Update Employee Details", component : UpdateEmployeeDialog },
   ];
 
   return (

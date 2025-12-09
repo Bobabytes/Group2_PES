@@ -3,6 +3,10 @@ import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
 import { DollarSign, Calendar, FileText, TrendingUp, Users, Clock, Shield, UserCheck, UserPen, AlertCircle, CircleDollarSign, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer";
+import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
+import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDialog";
+import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 
 const AdministratorDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
@@ -121,11 +125,11 @@ const AdministratorDashboard = () => {
   // Actions: Implement functionality here later.
   // Ideally the functionality would be in a function above this
   const quickActions = [
-    { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
-    { label: "Submit Personal Leave Request", onClick: () => toast.info("Personal Leave request coming soon! (Port from Emp)") },
+    { label: "View Payslips", component : PayslipPDFViewer },
+    { label: "Submit Personal Leave Request", component : LeaveRequestDialog },
     { label: "Manage Employee Leave Requests", onClick: () => toast.info("Employee Leave Management coming soon!") },
-    { label: "Add/Remove Employee", onClick: () => toast.info("Employee List Management coming soon!") },
-    { label: "Update Employee Details", onClick: () => toast.info("Employee Details Update coming soon!") },
+    { label: "Add/Remove Employee", component : EmployeeManagementDialog },
+    { label: "Update Employee Details", component : UpdateEmployeeDialog },
     { label: "Manage Payroll Report", onClick: () => toast.info("Payroll processing coming soon!") },
     { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
   ];
