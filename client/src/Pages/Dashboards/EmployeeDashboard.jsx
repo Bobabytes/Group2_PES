@@ -26,26 +26,43 @@ useEffect(() => {
   }
 }, []);
 
-// New state for salary
+// New state for salary and ytd
 const [salary, setSalary] = useState(0);
+const [ytd, setYtd] = useState(0);
 
 useEffect(() => {
   try {
     const storedSalary = localStorage.getItem("salary");
-    if (storedSalary !== null) {
-      setSalary(Number(storedSalary));
+    const storedCreatedAt = localStorage.getItem("created_at");
+
+    if (!storedSalary || !storedCreatedAt) return;
+
+    const salaryNum = Number(storedSalary);
+    setSalary(salaryNum);
+
+    const hireDate = new Date(storedCreatedAt);
+    const today = new Date();
+
+    let yearDiff = today.getFullYear() - hireDate.getFullYear();
+    let monthDiff = today.getMonth() - hireDate.getMonth();
+    let monthsWorked = yearDiff * 12 + monthDiff;
+
+    if (today.getDate() < hireDate.getDate()) {
+      monthsWorked -= 1;
     }
+
+    if (monthsWorked < 0) monthsWorked = 0;
+
+    setYtd(salaryNum * monthsWorked);
   } catch (err) {
-    console.error("Error reading salary:", err);
+    console.error("Error reading salary / calculating YTD:", err);
   }
 }, []);
-
-
 
   const stats = [
     {
       title: "Current Salary",
-      value: `$${salary.toLocaleString()}`,
+      value: `${salary.toLocaleString()}`,
       description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",
@@ -61,7 +78,7 @@ useEffect(() => {
     },
     {
       title: "YTD Earnings",
-      value: "$16,200",
+      value: `${ytd.toLocaleString()}`,
       description: "Year to date",
       icon: TrendingUp,
       borderColor: "border-l-accent",

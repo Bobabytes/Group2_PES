@@ -52,6 +52,7 @@ app.post("/login", async (req, res) => {
       name: user.name || user.username,
       leaves: user.leaves,
       salary: user.salary,
+      created_at: user.created_at,
     });
   } catch (err) {
     res.status(500).json({ message: "Database error" });

@@ -53,7 +53,7 @@ function Login() {
         selectedRole: role,
       });
 
-      const { actualRole, warning, userId, username, name, leaves, salary } = response.data;
+      const { actualRole, warning, userId, username, name, leaves, salary, created_at } = response.data;
 
       if (warning) {
         toast.warning(warning);
@@ -76,6 +76,8 @@ function Login() {
       localStorage.setItem("employeeId", employeeId);
       localStorage.setItem("leaves", leaves);
       localStorage.setItem("salary", salary);
+      localStorage.setItem("created_at", created_at);
+
 
 
       
