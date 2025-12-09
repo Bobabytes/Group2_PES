@@ -89,12 +89,23 @@
 
 /* Quick Actions */
 .quick-actions-grid {
-  @apply grid gap-4 mb-4 md:grid-cols-2;
+  @apply grid gap-4 p-6;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 3fr));
 }
 
 .quick-action-button {
-  @apply h-auto flex-col gap-2 p-6 text-2xl font-bold justify-center items-center rounded-lg border bg-card shadow-sm transition-all hover:shadow-md;
+  @apply w-full h-14 min-h-[56px] max-h-[56px] px-4 ;
+  aspect-ratio: auto ;
+  display: flex ;
+  align-items: center ;
+  justify-content: flex-start ;
+  font-size: 1rem ;
+  font-weight: 600 ;
+  white-space: nowrap ;
+  overflow: hidden ;
+  text-overflow: ellipsis ;
 }
-.quick-action-icon {
-  @apply h-8 w-8;
+
+.quick-actions-grid > div > * button {
+  @apply w-full h-14 min-h-[85px] max-h-[70px] px-4 ;
 }

@@ -53,7 +53,7 @@ function Login() {
         selectedRole: role,
       });
 
-      const { id, actualRole, leaves, warning } = response.data;
+      const { actualRole, warning, userId, username, name } = response.data;
 
       if (warning) {
         toast.warning(warning);
@@ -61,24 +61,31 @@ function Login() {
         toast.success("Login successful!");
       }
 
-      console.log("User from DB:", user); 
-      localStorage.setItem("selectedRole", role);
+      // CRITICAL FIX: Save ALL user data to localStorage
+      console.log("✅ Login successful, saving to localStorage:", {
+        userId,
+        actualRole,
+        username,
+        name
+      });
+      
+      localStorage.setItem("userId", userId);
       localStorage.setItem("userRole", actualRole);
+      localStorage.setItem("username", username);
+      localStorage.setItem("name", name);
       localStorage.setItem("employeeId", employeeId);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-        id,
-        role: actualRole,
-        leaves,
-        username: employeeId,
-      })
-);
+      
+      // For debugging
+      console.log("🔍 Saved localStorage after login:");
+      console.log("  userId:", localStorage.getItem("userId"));
+      console.log("  userRole:", localStorage.getItem("userRole"));
+      console.log("  username:", localStorage.getItem("username"));
 
       navigate("/home");
     } catch (error) 
     {
       toast.error(error.response?.data?.message || "Login failed.");
+      console.error("Login error:", error.response?.data);
     }
   };
 
@@ -109,23 +116,24 @@ function Login() {
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="employee">Employee</SelectItem>
-                    <SelectItem value="hr">HR</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
-                    <SelectItem value="administrator">Administrator</SelectItem>
+                    <SelectItem value="Employee">Employee</SelectItem>
+                    <SelectItem value="HR">HR Staff</SelectItem>
+                    <SelectItem value="Finance">Finance</SelectItem>
+                    <SelectItem value="Administrator">Administrator</SelectItem> 
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="employeeId">Employee ID</Label>
+                <Label htmlFor="employeeId">Username</Label>
                 <Input
                   id="employeeId"
-                  placeholder="Enter your employee ID"
+                  placeholder="Enter your username"
                   value={employeeId}
                   onChange={(e) => setEmployeeId(e.target.value)}
                   required
                 />
+                
               </div>
 
               <div className="space-y-2">
@@ -138,24 +146,20 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                
               </div>
 
               <Button type="submit" className="w-full">
                 Sign In
               </Button>
+              
+           
             </form>
           </CardContent>
         </Card>
       </div>
 
       <hr />
-      <div>
-        <h1>Login Page Debug</h1>
-        <p>If you can see fruits below, backend is connected:</p>
-        {array.map((fruit, i) => (
-          <p key={i}>{fruit}</p>
-        ))}
-      </div>
     </>
   );
 }
