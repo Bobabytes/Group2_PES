@@ -51,7 +51,7 @@ export default function LeaveRequestDialog() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: localStorage.getItem("userId"), 
+          usersId: localStorage.getItem("userId"), // TODO: replace with user id
           leaveType,
           startDate,
           endDate,
