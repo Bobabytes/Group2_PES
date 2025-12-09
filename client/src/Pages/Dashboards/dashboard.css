@@ -6,7 +6,7 @@
 /* Dashboard Component Styles */
 
 .dashboard-container {
-  @apply space-y-6 animate-fade-in;
+ 
 }
 
 .dashboard-header {
@@ -89,12 +89,20 @@
 
 /* Quick Actions */
 .quick-actions-grid {
-  @apply grid gap-4 mb-4 md:grid-cols-2;
+  @apply grid gap-4 p-6;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 3fr));
 }
 
 .quick-action-button {
-  @apply h-auto flex-col gap-2 p-6 text-2xl font-bold justify-center items-center rounded-lg border bg-card shadow-sm transition-all hover:shadow-md;
+  @apply w-full h-14 justify-start px-4 text-base font-semibold 
+         bg-white text-gray-800 
+         border border-gray-200
+         hover:bg-green-500 hover:text-white 
+         hover:border-green-600
+         shadow-sm hover:shadow-md 
+         transition-all duration-200;
 }
-.quick-action-icon {
-  @apply h-8 w-8;
+
+.quick-actions-grid > div > * button {
+  @apply w-full h-14 min-h-[85px] max-h-[70px] px-4;
 }
