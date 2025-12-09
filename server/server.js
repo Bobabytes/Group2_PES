@@ -175,6 +175,44 @@ app.put('/api/admin/employees/:id', requireAdminHR, async (req, res) => {
   }
 });
 
+app.post("/api/leave-request", (req, res) => {
+  const { usersId, leaveType, startDate, endDate} = req.body;
+
+  if (!usersId || !leaveType || !startDate || !endDate) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start <= today) {
+    return res.status(400).json({ message: "Start date must be after today" });
+  }
+  if (end <= start) {
+    return res.status(400).json({ message: "End date must be after the start date" });
+  }
+
+  const sql = `
+    INSERT INTO EmployeeLeaves (users_id, leave_type, start_date, end_date)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.run(sql, [usersId, leaveType, startDate, endDate], function (err) {
+    if (err) {
+      console.error("DB Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    
+    return res.status(201).json({
+    message: "Leave request successfully submitted!",
+    leaveId: this.lastID,
+  });
+  });
+});
+
 // Start server
 const PORT = 8080;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LeaveRequestDialog() {
   const [leaveType, setLeaveType] = useState("");
@@ -50,7 +51,7 @@ export default function LeaveRequestDialog() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          usersId: 1, // TODO: replace with user id
+          usersId: localStorage.getItem("userId"), // TODO: replace with user id
           leaveType,
           startDate,
           endDate,

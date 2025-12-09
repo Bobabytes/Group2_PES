@@ -150,12 +150,13 @@ export default function UpdateEmployeeDialog() {
             <span className="flex items-center gap-2">
               <Users className="w-5 h-5" />
               Update Employee Details
-            </span>
+            
             <div className="flex items-center gap-2">
               <Badge variant="default">
                 {userRole}
               </Badge>
             </div>
+            </span>
           </DialogTitle>
           <DialogDescription>
             Select an employee to update their details
