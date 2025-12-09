@@ -57,6 +57,8 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+
 // Middleware for admin/hr access
 const requireAdminHR = async (req, res, next) => {
   const userId = req.headers['user-id'];
@@ -101,7 +103,7 @@ app.get('/api/admin/employees', requireAdminHR, async (req, res) => {
     VALUES (?, ?, ?, ?)
   `;
 
-  db.run(sql, [usersId, leaveType, startDate, endDate], function (err) {
+  db.run(sql, [userId, leaveType, startDate, endDate], function (err) {
     if (err) {
       console.error("DB Error:", err);
       return res.status(500).json({ message: "Database error" });
@@ -195,6 +197,47 @@ app.put('/api/admin/employees/:id', requireAdminHR, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+app.post("/api/leave-request", async (req, res) => {
+  const { userId, leaveType, startDate, endDate} = req.body;
+
+  if (!userId  || !leaveType || !startDate || !endDate) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start <= today) {
+    return res.status(400).json({ message: "Start date must be after today" });
+  }
+  if (end <= start) {
+    return res.status(400).json({ message: "End date must be after the start date" });
+  }
+
+  const sql = `
+    INSERT INTO EmployeeLeaves (user_id, leave_type, start_date, end_date)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.run(sql, [userId, leaveType, startDate, endDate], function (err) {
+    if (err) {
+      console.error("DB Error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    return res.status(201).json({
+    message: "Leave request successfully submitted!",
+    leaveId: this.lastID,
+  });
+  });
+});
+
+
 
 // Start server
 const PORT = 8080;

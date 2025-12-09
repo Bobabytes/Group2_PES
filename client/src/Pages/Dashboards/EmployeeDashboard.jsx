@@ -6,7 +6,7 @@ import QuickActions from "@/components/custom/QuickActions";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
-import { toast } from "sonner";
+
 
 
 const EmployeeDashboard = () => {
