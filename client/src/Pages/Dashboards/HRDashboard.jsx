@@ -12,6 +12,7 @@ import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import ManageLeave from "@/components/custom/ManageLeave";
 
 const HRDashboard = () => {
+
   // MOCK DATA: REPLACE WITH DATABASE QUERIES INTO VARIABLES LATER 
   const stats = [
     {

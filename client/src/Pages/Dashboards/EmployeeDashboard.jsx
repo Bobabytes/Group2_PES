@@ -11,28 +11,41 @@ import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
 
 const EmployeeDashboard = () => {
 
-  const [leaveBalance, setLeaveBalance] = useState(0);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("user");
-      if (stored) {
-        const user = JSON.parse(stored);
-        if (user.leaves != null) {
-          setLeaveBalance(user.leaves);
-        }
-      }
-    } catch (err) {
-      console.error("Error reading user from localStorage:", err);
+// New state for leave balance
+const [leaveBalance, setLeaveBalance] = useState(0);
+
+useEffect(() => {
+  try {
+    const storedLeaves = localStorage.getItem("leaves");
+    if (storedLeaves !== null) {
+      setLeaveBalance(Number(storedLeaves));
     }
-  }, []);
+  } catch (err) {
+    console.error("Error reading leaves from localStorage:", err);
+  }
+}, []);
+
+// New state for salary
+const [salary, setSalary] = useState(0);
+
+useEffect(() => {
+  try {
+    const storedSalary = localStorage.getItem("salary");
+    if (storedSalary !== null) {
+      setSalary(Number(storedSalary));
+    }
+  } catch (err) {
+    console.error("Error reading salary:", err);
+  }
+}, []);
 
 
 
   const stats = [
     {
       title: "Current Salary",
-      value: "$5,400",
+      value: `$${salary.toLocaleString()}`,
       description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",

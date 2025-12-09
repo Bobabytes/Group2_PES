@@ -50,6 +50,8 @@ app.post("/login", async (req, res) => {
       userId: user.id,
       username: user.username,
       name: user.name || user.username,
+      leaves: user.leaves,
+      salary: user.salary,
     });
   } catch (err) {
     res.status(500).json({ message: "Database error" });
@@ -175,6 +177,8 @@ app.put('/api/admin/employees/:id', requireAdminHR, async (req, res) => {
   }
 });
 
+
+//leave request
 app.post("/api/leave-request", (req, res) => {
   const { usersId, leaveType, startDate, endDate} = req.body;
 
@@ -212,6 +216,7 @@ app.post("/api/leave-request", (req, res) => {
   });
   });
 });
+
 
 // Start server
 const PORT = 8080;

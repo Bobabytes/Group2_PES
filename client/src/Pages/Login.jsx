@@ -53,7 +53,7 @@ function Login() {
         selectedRole: role,
       });
 
-      const { actualRole, warning, userId, username, name } = response.data;
+      const { actualRole, warning, userId, username, name, leaves, salary } = response.data;
 
       if (warning) {
         toast.warning(warning);
@@ -74,6 +74,10 @@ function Login() {
       localStorage.setItem("username", username);
       localStorage.setItem("name", name);
       localStorage.setItem("employeeId", employeeId);
+      localStorage.setItem("leaves", leaves);
+      localStorage.setItem("salary", salary);
+
+
       
       // For debugging
       console.log("🔍 Saved localStorage after login:");
