@@ -1,62 +1,67 @@
-import { useState, useEffect } from "react";
+// components/custom/EmployeeDashboard.jsx
+import { useEffect, useState } from "react";
 import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
-import { toast } from "sonner";
+
 
 const EmployeeDashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
 
-  
-  // Fetch personal dashboard stats
-  const fetchDashboardStats = async () => {
-    const userId = localStorage.getItem("userId");
-    
-    if (!userId) {
-      toast.error("Please log in first");
-      setLoading(false);
-      return;
+// New state for leave balance
+const [leaveBalance, setLeaveBalance] = useState(0);
+
+useEffect(() => {
+  try {
+    const storedLeaves = localStorage.getItem("leaves");
+    if (storedLeaves !== null) {
+      setLeaveBalance(Number(storedLeaves));
+    }
+  } catch (err) {
+    console.error("Error reading leaves from localStorage:", err);
+  }
+}, []);
+
+// New state for salary and ytd
+const [salary, setSalary] = useState(0);
+const [ytd, setYtd] = useState(0);
+
+useEffect(() => {
+  try {
+    const storedSalary = localStorage.getItem("salary");
+    const storedCreatedAt = localStorage.getItem("created_at");
+
+    if (!storedSalary || !storedCreatedAt) return;
+
+    const salaryNum = Number(storedSalary);
+    setSalary(salaryNum);
+
+    const hireDate = new Date(storedCreatedAt);
+    const today = new Date();
+
+    let yearDiff = today.getFullYear() - hireDate.getFullYear();
+    let monthDiff = today.getMonth() - hireDate.getMonth();
+    let monthsWorked = yearDiff * 12 + monthDiff;
+
+    if (today.getDate() < hireDate.getDate()) {
+      monthsWorked -= 1;
     }
 
-    try {
-      const response = await fetch("http://localhost:8080/api/employee/dashboard-stats", {
-        headers: { "user-id": userId },
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to fetch dashboard stats");
-      }
-      
-      const data = await response.json();
-      
-      // Format the data for display
-      setStats({
-        salary: `$${(data.currentSalary || 0).toLocaleString()}`,
-        leaveBalance: `${data.leaveBalance} days`,
-        nextPayment: data.nextPayment,
-        ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
-      });
-    } catch (error) {
-      console.error("Error fetching dashboard stats:", error);
-      toast.error("Failed to load dashboard data");
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (monthsWorked < 0) monthsWorked = 0;
 
-  const PersonalStats = [
+    setYtd(salaryNum * monthsWorked);
+  } catch (err) {
+    console.error("Error reading salary / calculating YTD:", err);
+  }
+}, []);
+
+  const stats = [
     {
       title: "Current Salary",
-      value: loading ? "Loading..." : (stats?.salary || "Not available"),
+      value: `${salary.toLocaleString()}`,
       description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",
@@ -72,7 +77,7 @@ const EmployeeDashboard = () => {
     },
     {
       title: "YTD Earnings",
-      value: loading ? "Loading..." : (stats?.ytd || "Not available"),
+      value: `${ytd.toLocaleString()}`,
       description: "Year to date",
       icon: TrendingUp,
       borderColor: "border-l-accent",
@@ -80,7 +85,7 @@ const EmployeeDashboard = () => {
     },
     {
       title: "Leave Balance",
-      value: loading ? "Loading..." : (stats?.leaveBalance || "Not available"),
+      value: `${leaveBalance} days`,
       description: "Available this year",
       icon: FileText,
       borderColor: "border-l-accent",
