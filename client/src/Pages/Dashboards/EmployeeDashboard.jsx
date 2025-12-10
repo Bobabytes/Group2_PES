@@ -16,7 +16,7 @@ const [leaveBalance, setLeaveBalance] = useState(0);
 
 useEffect(() => {
   try {
-    const storedLeaves = localStorage.getItem("leaves");
+    const storedLeaves = localStorage.getItem("leaveBalance");
     if (storedLeaves !== null) {
       setLeaveBalance(Number(storedLeaves));
     }
@@ -69,7 +69,7 @@ useEffect(() => {
     },
     {
       title: "Next Payment",
-      value: loading ? "Loading..." : (stats?.nextPayment || "Not available"),
+      value:  "Loading..." ,
       description: "Estimated date",
       icon: Calendar,
       borderColor: "border-l-accent",
@@ -113,7 +113,7 @@ useEffect(() => {
   return (
     <div className="space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-4">Employee Dashboard</h1>
-      <StatsGrid stats={PersonalStats} />
+      <StatsGrid stats={stats} />
       
       <div className="grid gap-6 md:grid-cols-2">
         <PayslipList payslips={payslips} />
