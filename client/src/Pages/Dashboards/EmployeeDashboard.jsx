@@ -1,5 +1,4 @@
-// components/custom/EmployeeDashboard.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StatsGrid from "@/components/custom/StatsGrid";
 import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
@@ -8,13 +7,56 @@ import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
-
 const EmployeeDashboard = () => {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   
-  const stats = [
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  
+  // Fetch personal dashboard stats
+  const fetchDashboardStats = async () => {
+    const userId = localStorage.getItem("userId");
+    
+    if (!userId) {
+      toast.error("Please log in first");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/employee/dashboard-stats", {
+        headers: { "user-id": userId },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch dashboard stats");
+      }
+      
+      const data = await response.json();
+      
+      // Format the data for display
+      setStats({
+        salary: `$${(data.currentSalary || 0).toLocaleString()}`,
+        leaveBalance: `${data.leaveBalance} days`,
+        nextPayment: data.nextPayment,
+        ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const PersonalStats = [
     {
       title: "Current Salary",
-      value: "$5,400",
+      value: loading ? "Loading..." : (stats?.salary || "Not available"),
       description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",
@@ -22,15 +64,15 @@ const EmployeeDashboard = () => {
     },
     {
       title: "Next Payment",
-      value: "March 31, 2025",
-      description: "Days remaining",
+      value: loading ? "Loading..." : (stats?.nextPayment || "Not available"),
+      description: "Estimated date",
       icon: Calendar,
       borderColor: "border-l-accent",
       iconColor: "text-accent"
     },
     {
       title: "YTD Earnings",
-      value: "$16,200",
+      value: loading ? "Loading..." : (stats?.ytd || "Not available"),
       description: "Year to date",
       icon: TrendingUp,
       borderColor: "border-l-accent",
@@ -38,7 +80,7 @@ const EmployeeDashboard = () => {
     },
     {
       title: "Leave Balance",
-      value: "12 days",
+      value: loading ? "Loading..." : (stats?.leaveBalance || "Not available"),
       description: "Available this year",
       icon: FileText,
       borderColor: "border-l-accent",
@@ -52,7 +94,6 @@ const EmployeeDashboard = () => {
     { month: "January 2024", amount: 5200, status: "Paid" },
   ];
 
- 
   const quickActions = [
     { 
       label: "View Payslips", 
@@ -67,7 +108,7 @@ const EmployeeDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-4">Employee Dashboard</h1>
-      <StatsGrid stats={stats} />
+      <StatsGrid stats={PersonalStats} />
       
       <div className="grid gap-6 md:grid-cols-2">
         <PayslipList payslips={payslips} />

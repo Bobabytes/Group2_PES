@@ -213,6 +213,55 @@ app.post("/api/leave-request", (req, res) => {
   });
 });
 
+// STAT FETCH ROUTE
+app.get('/api/employee/dashboard-stats', async (req, res) => {
+  const userId = req.headers['user-id'];
+  
+  if (!userId) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  try {
+    // Get user data including salary and leave balance
+    const user = await dbGet(`
+      SELECT salary, leave_balance 
+      FROM users 
+      WHERE id = ?
+    `, [userId]);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // For now, calculate mock data for next payment and YTD
+    // replace these with real calculations later --P
+    const today = new Date();
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const nextPaymentDate = lastDayOfMonth.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    // Mock - calculate this from payslips table when it's done -- P
+    const mockYTD = user.salary * 3; // Assuming 3 months salary paid
+
+    res.json({
+      currentSalary: user.salary || 0,
+      leaveBalance: user.leave_balance || 12,
+      nextPayment: nextPaymentDate,
+      ytdEarnings: mockYTD,
+      // Include any other here -- P
+    });
+  } catch (error) {
+    console.error('Dashboard stats error:', error);
+    res.status(500).json({ error: 'Failed to fetch dashboard stats' });
+  }
+});
+
+
+
+
 // Start server
 const PORT = 8080;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));

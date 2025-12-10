@@ -7,13 +7,56 @@ import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer";
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDialog";
 import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
+import { useState, useEffect } from "react";
 
 const AdministratorDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
+  // DATABASE QUERY: Fetch Employee Details here
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
   
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  // Fetch personal dashboard stats
+  const fetchDashboardStats = async () => {
+    const userId = localStorage.getItem("userId");
+    
+    if (!userId) {
+      toast.error("Please log in first");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/employee/dashboard-stats", {
+        headers: { "user-id": userId },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch dashboard stats");
+      }
+      
+      const data = await response.json();
+      
+      // Format the data for display
+      setStats({
+        salary: `$${(data.currentSalary || 0).toLocaleString()}`,
+        leaveBalance: `${data.leaveBalance} days`,
+        nextPayment: data.nextPayment,
+        ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
-  const stats = [
+  const AdminStats = [
     {
       title: "Total Employees",
       value: "100 (Mock)",
@@ -80,35 +123,35 @@ const AdministratorDashboard = () => {
     },
   ];
 
-  const personalStats = [
+  const PersonalStats = [
     {
       title: "Current Salary",
-      value: "$5,400 (Mock)",
-      description: "Monthly Gross Pay (Fetch from employee salary details)",
+      value: loading ? "Loading..." : (stats?.salary || "Not available"),
+      description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",
       iconColor: "text-primary"
     },
     {
       title: "Next Payment",
-      value: "March 31, 2025 (Mock)",
-      description: "{x} Days Remaining (Fetch from payment schedule - current date)",
+      value: loading ? "Loading..." : (stats?.nextPayment || "Not available"),
+      description: "Estimated date",
       icon: Calendar,
       borderColor: "border-l-accent",
       iconColor: "text-accent"
     },
     {
       title: "YTD Earnings",
-      value: "$16,200 (Mock)",
-      description: "Year to date (Fetch from employee earnings records)",
+      value: loading ? "Loading..." : (stats?.ytd || "Not available"),
+      description: "Year to date",
       icon: TrendingUp,
       borderColor: "border-l-accent",
       iconColor: "text-secondary-foreground"
     },
     {
       title: "Leave Balance",
-      value: "12 days (Mock)",
-      description: "Available this year (Fetch current user's available leaves)",
+      value: loading ? "Loading..." : (stats?.leaveBalance || "Not available"),
+      description: "Available this year",
       icon: FileText,
       borderColor: "border-l-accent",
       iconColor: "text-accent"
@@ -137,14 +180,14 @@ const AdministratorDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-4">Welcome back, (Name). You are an Administrator.</h1>
-      <StatsGrid stats={stats} />
+      <StatsGrid stats={AdminStats} />
       
       <div className="grid gap-6 md:grid-cols-2">
         <PayslipList payslips={payslips} title="Personal Payslips" />
         <QuickActions actions={quickActions} title="Administrator Actions" />
       </div>
       <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
-      <StatsGrid stats={personalStats} />
+      <StatsGrid stats={PersonalStats} />
     </div>
   );
 };

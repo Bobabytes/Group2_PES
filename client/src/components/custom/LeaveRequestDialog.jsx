@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import { useState } from "react";
 import { toast } from "sonner";
+import { FileText, BookUser } from "lucide-react";
 
 export default function LeaveRequestDialog() {
   const [leaveType, setLeaveType] = useState("");
@@ -76,6 +77,7 @@ export default function LeaveRequestDialog() {
     <Dialog>
      <DialogTrigger asChild>
         <Button variant="outline" className="quick-action-button">
+          <BookUser className="w-5 h-5" />
           Request Leave
         </Button>
       </DialogTrigger>

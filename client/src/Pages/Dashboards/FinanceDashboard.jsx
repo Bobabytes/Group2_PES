@@ -6,13 +6,59 @@ import { DollarSign, Calendar, FileText, TrendingUp, AlertCircle, CircleDollarSi
 import { toast } from "sonner";
 import PendingPaymentList from "@/components/custom/PendingPaymentList";
 import TransactionList from "@/components/custom/TransactionList";
+import { useState, useEffect } from "react";
+import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
+import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 
 const FinanceDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
   
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  // Fetch personal dashboard stats
+  const fetchDashboardStats = async () => {
+    const userId = localStorage.getItem("userId");
+    
+    if (!userId) {
+      toast.error("Please log in first");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/employee/dashboard-stats", {
+        headers: { "user-id": userId },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch dashboard stats");
+      }
+      
+      const data = await response.json();
+      
+      // Format the data for display
+      setStats({
+        salary: `$${(data.currentSalary || 0).toLocaleString()}`,
+        leaveBalance: `${data.leaveBalance} days`,
+        nextPayment: data.nextPayment,
+        ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
 
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
-  const stats = [
+  const FinanceStats = [
     {
       title: "Payroll Report",
       value: "$750,000 (Mock)",
@@ -47,35 +93,35 @@ const FinanceDashboard = () => {
     },
   ];
 
-  const personalStats = [
+  const PersonalStats = [
     {
       title: "Current Salary",
-      value: "$5,400 (Mock)",
-      description: "Monthly Gross Pay (Fetch from employee salary details)",
+      value: loading ? "Loading..." : (stats?.salary || "Not available"),
+      description: "Monthly Gross Pay",
       icon: DollarSign,
       borderColor: "border-l-primary",
       iconColor: "text-primary"
     },
     {
       title: "Next Payment",
-      value: "March 31, 2025 (Mock)",
-      description: "{x} Days Remaining (Fetch from payment schedule - current date)",
+      value: loading ? "Loading..." : (stats?.nextPayment || "Not available"),
+      description: "Estimated date",
       icon: Calendar,
       borderColor: "border-l-accent",
       iconColor: "text-accent"
     },
     {
       title: "YTD Earnings",
-      value: "$16,200 (Mock)",
-      description: "Year to date (Fetch from employee earnings records)",
+      value: loading ? "Loading..." : (stats?.ytd || "Not available"),
+      description: "Year to date",
       icon: TrendingUp,
       borderColor: "border-l-accent",
       iconColor: "text-secondary-foreground"
     },
     {
       title: "Leave Balance",
-      value: "12 days (Mock)",
-      description: "Available this year (Fetch current user's available leaves)",
+      value: loading ? "Loading..." : (stats?.leaveBalance || "Not available"),
+      description: "Available this year",
       icon: FileText,
       borderColor: "border-l-accent",
       iconColor: "text-accent"
@@ -91,8 +137,14 @@ const FinanceDashboard = () => {
   // Actions: Implement functionality here later.
   // Ideally the functionality would be in a function above this
   const quickActions = [
-    { label: "View Payslips", onClick: () => toast.info("Payslip viewing coming soon!") },
-    { label: "Request Personal Leave", onClick: () => toast.info("Leave request coming soon!") },
+    { 
+      label: "View Payslips", 
+      component: PayslipPDFViewer 
+    },
+    { 
+      label: "Submit Personal Leave Request", 
+      component: LeaveRequestDialog
+    },
     { label: "Manage Payroll Report", onClick: () => toast.info("Payroll processing coming soon!") },
     { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
   ];
@@ -119,7 +171,7 @@ const FinanceDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-4">Welcome back, (Name).</h1>
-      <StatsGrid stats={stats} />
+      <StatsGrid stats={FinanceStats} />
       
       <div className="grid gap-6 md:grid-cols-3">
         <PayrollRunList runs={payrollRuns} />
@@ -132,7 +184,7 @@ const FinanceDashboard = () => {
         <QuickActions actions={quickActions} title="Finance Team Actions" />
       </div>
       <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
-      <StatsGrid stats={personalStats} />
+      <StatsGrid stats={PersonalStats} />
     </div>
   );
 };
