@@ -19,6 +19,40 @@ const HRDashboard = () => {
     useEffect(() => {
       fetchDashboardStats();
     }, []);
+
+    // Fetch number of pending approvals
+  const fetchPendingApprovals = async () => {
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) return;
+
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/hr/pending-leaves-count",
+      {
+        headers: { "user-id": userId },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch pending approvals");
+    }
+
+    const data = await response.json();
+    setPendingApprovals(data.pending);
+  } catch (error) {
+    console.error("Error fetching pending approvals:", error);
+    toast.error("Failed to load pending approvals");
+  }
+};
+
+  const [pendingApprovals, setPendingApprovals] = useState(0);
+
+  useEffect(() => {
+    fetchDashboardStats();
+    fetchPendingApprovals();
+  }, []);
+
   
     // Fetch personal dashboard stats
     const fetchDashboardStats = async () => {
@@ -111,7 +145,7 @@ const HRDashboard = () => {
     },
     {
       title: "Pending Approvals",
-      value: "5 (Mock)",
+      value: loading ? "Loading..." : pendingApprovals.toString(),
       description: "Leave requests pending your approval (Fetch all pending requests)",
       icon: UserPen,
       borderColor: "border-l-accent",

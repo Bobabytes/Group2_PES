@@ -80,6 +80,22 @@ const requireAdminHR = async (req, res, next) => {
   }
 };
 
+app.get('/api/hr/pending-leaves-count', requireAdminHR, async (req, res) => {
+  try {
+    const result = await dbGet(
+      `SELECT COUNT(*) AS count
+       FROM EmployeeLeaves
+       WHERE status = 'Pending'`
+    );
+
+    res.json({ pending: result.count });
+  } catch (error) {
+    console.error('Pending leaves count error:', error);
+    res.status(500).json({ error: 'Failed to fetch pending leave approvals' });
+  }
+});
+
+
 // Employee Management
 app.get('/api/admin/employees', requireAdminHR, async (req, res) => {
   try {
@@ -175,6 +191,8 @@ app.put('/api/admin/employees/:id', requireAdminHR, async (req, res) => {
   }
 });
 
+
+// Leave Request Submission
 app.post("/api/leave-request", (req, res) => {
   const { usersId, leaveType, startDate, endDate} = req.body;
 
