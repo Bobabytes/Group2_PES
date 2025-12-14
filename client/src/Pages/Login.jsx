@@ -53,7 +53,7 @@ function Login() {
         selectedRole: role,
       });
 
-      const { actualRole, warning, userId, username, name, leaves, salary, created_at } = response.data;
+      const { actualRole, warning, userId, username, name } = response.data;
 
       if (warning) {
         toast.warning(warning);
@@ -74,12 +74,6 @@ function Login() {
       localStorage.setItem("username", username);
       localStorage.setItem("name", name);
       localStorage.setItem("employeeId", employeeId);
-      localStorage.setItem("leaves", leaves);
-      localStorage.setItem("salary", salary);
-      localStorage.setItem("created_at", created_at);
-
-
-
       
       // For debugging
       console.log("🔍 Saved localStorage after login:");
@@ -88,8 +82,7 @@ function Login() {
       console.log("  username:", localStorage.getItem("username"));
 
       navigate("/home");
-    } catch (error) 
-    {
+    } catch (error) {
       toast.error(error.response?.data?.message || "Login failed.");
       console.error("Login error:", error.response?.data);
     }
