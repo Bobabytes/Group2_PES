@@ -17,7 +17,14 @@ const HRDashboard = () => {
     // DATABASE QUERY: Fetch Employee Details here
     const [stats, setStats] = useState({});
     const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
   
+=======
+    
+    useEffect(() => {
+      fetchDashboardStats();
+    }, []);
+>>>>>>> d0e3976 (Fetched number of pending approvals for hr)
 
     // Fetch number of pending approvals
   const fetchPendingApprovals = async () => {
@@ -187,7 +194,7 @@ const fetchEmployeeCount = async () => {
     },
     {
       title: "Pending Approvals",
-      value: "5 (Mock)",
+      value: loading ? "Loading..." : pendingApprovals.toString(),
       description: "Leave requests pending your approval (Fetch all pending requests)",
       icon: UserPen,
       borderColor: "border-l-accent",
