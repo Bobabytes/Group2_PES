@@ -50,7 +50,7 @@ app.post("/login", async (req, res) => {
       userId: user.id,
       username: user.username,
       name: user.name || user.username,
-      leaveBalance: user.leave_balance,
+      leaves: user.leaves,
       salary: user.salary,
       created_at: user.created_at,
     });
