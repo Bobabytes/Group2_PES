@@ -10,6 +10,8 @@ import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDial
 import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import ManageLeave from "@/components/custom/ManageLeave";
 import { useState, useEffect } from "react";
+import LeaveCalendar from "@/components/custom/LeaveCalendar";
+import "@/Pages/Dashboards/Dashboard.css";
 
 const HRDashboard = () => {
     // DATABASE QUERY: Fetch Employee Details here
@@ -57,6 +59,11 @@ const HRDashboard = () => {
     };
 
   // MOCK DATA: REPLACE WITH DATABASE QUERIES INTO VARIABLES LATER 
+  const payslips = [
+    { month: "March 2024", amount: 9999, status: "Not Paid" },
+    { month: "February 2024", amount: 8204, status: "Paid" },
+    { month: "January 2024", amount: 3030, status: "Paid" },
+  ];
     const PersonalStats = [
     {
       title: "Current Salary",
@@ -147,12 +154,25 @@ const HRDashboard = () => {
     <div className="space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-4">Welcome back, HR.</h1>
       <StatsGrid stats={HRStats} />
-      <div className="grid gap-6 md:grid-cols-2">
-        <LeaveRequestList requests={leaveRequests} title="Leave Requests" />
-        <QuickActions actions={quickActions} title="HR Team Actions" />
+
+
+      <div className="grid gap-6 md:grid-cols-16">
+        <div className="md:col-span-16">
+          <LeaveRequestList requests={leaveRequests} title="Leave Requests" />  
+        </div>
+        <div className="md:col-span-6">
+          <PayslipList payslips={payslips} title="Personal Payslips" />
+        </div>
+        <div className="md:col-span-6">
+          <LeaveCalendar title="Personal Leave Calendar"/>
+        </div>
+        <div className="md:col-span-4">
+          <QuickActions actions={quickActions} title="HR Team Actions" />
+        </div>
+        <div className="md:col-span-16">
+        <StatsGrid stats={PersonalStats} />
+        </div>
       </div>
-      <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
-      <StatsGrid stats={PersonalStats} />
     </div>
   );
 };
