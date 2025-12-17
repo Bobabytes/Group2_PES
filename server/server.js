@@ -80,6 +80,8 @@ const requireAdminHR = async (req, res, next) => {
   }
 };
 
+// Fetch number of pending leave approvals
+
 app.get('/api/hr/pending-leaves-count', requireAdminHR, async (req, res) => {
   try {
     const result = await dbGet(
@@ -92,6 +94,23 @@ app.get('/api/hr/pending-leaves-count', requireAdminHR, async (req, res) => {
   } catch (error) {
     console.error('Pending leaves count error:', error);
     res.status(500).json({ error: 'Failed to fetch pending leave approvals' });
+  }
+});
+
+//Fetch total employee count
+
+app.get("/api/hr/employee-count", requireAdminHR, async (req, res) => {
+  try {
+    const row = await dbGet(`
+      SELECT COUNT(*) AS total
+      FROM users
+      WHERE is_active = 1
+    `);
+
+    res.json({ total: row.total });
+  } catch (error) {
+    console.error("Employee count error:", error);
+    res.status(500).json({ error: "Failed to fetch employee count" });
   }
 });
 
@@ -108,6 +127,8 @@ app.get('/api/admin/employees', requireAdminHR, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Add new employee
 
 app.post('/api/admin/employees', requireAdminHR, async (req, res) => {
   try {
