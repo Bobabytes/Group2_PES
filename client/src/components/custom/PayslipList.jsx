@@ -7,14 +7,14 @@ import "@/Pages/Dashboards/Dashboard.css";
 
 const PayslipList = ({ payslips, title = "Recent Payslips" }) => {
   return (
-    <Card className="list-card">
+    <Card className="list-card  h-full">
       <CardHeader className="list-card-header">
         <CardTitle className="flex items-center gap-2">
           <FileText className="w-5 h-5" />
           {title}
         </CardTitle>
       </CardHeader>
-      <ScrollArea style={{ height: '400px' }}>
+      <ScrollArea style={{ height: '500px' }}>
       <CardContent className="list-card-content">
         <div className="space-y-4">
           {payslips.map((payslip, index) => (
