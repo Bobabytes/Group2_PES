@@ -9,7 +9,6 @@ import TransactionList from "@/components/custom/TransactionList";
 import { useState, useEffect } from "react";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
-import LeaveCalendar from "@/components/custom/LeaveCalendar";
 
 const FinanceDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
@@ -180,21 +179,12 @@ const FinanceDashboard = () => {
         <TransactionList transactions={recentPayments} />
       </div>
 
-    
-      <div className="grid gap-6 md:grid-cols-16">
-        <div className="md:col-span-6">
-          <PayslipList payslips={payslips} />
-        </div>
-        <div className="md:col-span-6">
-          <LeaveCalendar />
-        </div>
-        <div className="md:col-span-4">
-          <QuickActions actions={quickActions} />
-        </div>
-        <div className="md:col-span-16">
-        <StatsGrid stats={PersonalStats} />
-        </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <PayslipList payslips={payslips} title="Personal Payslips" />
+        <QuickActions actions={quickActions} title="Finance Team Actions" />
       </div>
+      <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
+      <StatsGrid stats={PersonalStats} />
     </div>
   );
 };

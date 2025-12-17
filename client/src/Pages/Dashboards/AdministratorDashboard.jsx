@@ -8,7 +8,6 @@ import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDialog";
 import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import { useState, useEffect } from "react";
-import LeaveCalendar from "@/components/custom/LeaveCalendar";
 
 const AdministratorDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
@@ -183,20 +182,12 @@ const AdministratorDashboard = () => {
       <h1 className="text-3xl font-bold mb-4">Welcome back, (Name). You are an Administrator.</h1>
       <StatsGrid stats={AdminStats} />
       
-      <div className="grid gap-6 md:grid-cols-16">
-        <div className="md:col-span-6">
-          <PayslipList payslips={payslips} title="Personal Payslips" />
-        </div>
-        <div className="md:col-span-6">
-          <LeaveCalendar title="Personal Leave Calendar"/>
-        </div>
-        <div className="md:col-span-4">
-          <QuickActions actions={quickActions} title="Administrator Actions" />
-        </div>
-        <div className="md:col-span-16">
-        <StatsGrid stats={PersonalStats} />
-        </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <PayslipList payslips={payslips} title="Personal Payslips" />
+        <QuickActions actions={quickActions} title="Administrator Actions" />
       </div>
+      <h1 className="text-1xl font-bold mb-4">Your personal details</h1>
+      <StatsGrid stats={PersonalStats} />
     </div>
   );
 };

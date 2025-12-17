@@ -259,34 +259,7 @@ app.get('/api/employee/dashboard-stats', async (req, res) => {
   }
 });
 
-// Get employee leaves
-app.get('/api/employee/leaves', async (req, res) => {
-  const userId = req.query.userId || req.headers['user-id'];
-  
-  if (!userId) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
 
-  try {
-    const leaves = await dbAll(`
-      SELECT 
-        leave_id,
-        leave_type,
-        start_date,
-        end_date,
-        status,
-        created_at
-      FROM EmployeeLeaves 
-      WHERE users_id = ?
-      ORDER BY start_date DESC
-    `, [userId]);
-
-    res.json(leaves);
-  } catch (error) {
-    console.error('Leaves fetch error:', error);
-    res.status(500).json({ error: 'Failed to fetch leaves' });
-  }
-});
 
 
 // Start server
