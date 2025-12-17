@@ -15,12 +15,78 @@ import "@/Pages/Dashboards/Dashboard.css";
 
 const HRDashboard = () => {
     // DATABASE QUERY: Fetch Employee Details here
-    const [stats, setStats] = useState(null);
+    const [stats, setStats] = useState({});
     const [loading, setLoading] = useState(true);
-    
-    useEffect(() => {
-      fetchDashboardStats();
-    }, []);
+  
+
+    // Fetch number of pending approvals
+  const fetchPendingApprovals = async () => {
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) return;
+
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/hr/pending-leaves-count",
+      {
+        headers: { "user-id": userId },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch pending approvals");
+    }
+
+    const data = await response.json();
+    setPendingApprovals(data.pending);
+  } catch (error) {
+    console.error("Error fetching pending approvals:", error);
+    toast.error("Failed to load pending approvals");
+  }
+};
+
+// Fetch total employee count
+const fetchEmployeeCount = async () => {
+  try {
+    const userId = localStorage.getItem("userId");
+
+    console.log("FETCH EMPLOYEE COUNT CALLED");
+
+    const res = await fetch("http://localhost:8080/api/hr/employee-count", {
+      headers: { "user-id": userId },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch employee count");
+
+    const data = await res.json();
+    console.log("EMPLOYEE COUNT RESPONSE:", data);
+    console.log("EMPLOYEE COUNT RAW DATA:", JSON.stringify(data, null, 2));
+
+
+    setStats((prev) => ({
+      ...prev,
+      employeeCount: data.total,
+    }));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+  const [pendingApprovals, setPendingApprovals] = useState(0);
+
+  useEffect(() => {
+  const loadDashboard = async () => {
+    setLoading(true);
+    await fetchPendingApprovals();
+    await fetchEmployeeCount();
+    await fetchDashboardStats();
+    setLoading(false);
+  };
+
+  loadDashboard();
+}, []);
+
+
   
     // Fetch personal dashboard stats
     const fetchDashboardStats = async () => {
@@ -44,12 +110,15 @@ const HRDashboard = () => {
         const data = await response.json();
         
         // Format the data for display
-        setStats({
+        setStats((prev) => ({
+          ...prev,
           salary: `$${(data.currentSalary || 0).toLocaleString()}`,
           leaveBalance: `${data.leaveBalance} days`,
           nextPayment: data.nextPayment,
           ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
-        });
+        }));
+
+      //Fetch dashboard stats
       } catch (error) {
         console.error("Error fetching dashboard stats:", error);
         toast.error("Failed to load dashboard data");
@@ -102,7 +171,7 @@ const HRDashboard = () => {
   const HRStats = [
     {
       title: "Total Employees",
-      value: "100 (Mock)",
+      value: loading ? "Loading..." : (stats?.employeeCount ?? "Not available"),
       description: "Total number of employees (Fetch total employees)",
       icon: Users,
       borderColor: "border-l-primary",
