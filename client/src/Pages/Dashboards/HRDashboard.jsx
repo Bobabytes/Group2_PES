@@ -10,7 +10,7 @@ import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDial
 import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import ManageLeave from "@/components/custom/ManageLeave";
 import { useState, useEffect } from "react";
-import LeaveCalendar from "@/components/custom/LeaveCalendarList";
+import LeaveCalendar from "@/components/custom/LeaveCalendar";
 import "@/Pages/Dashboards/Dashboard.css";
 
 const HRDashboard = () => {

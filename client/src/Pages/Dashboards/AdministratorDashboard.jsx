@@ -8,7 +8,7 @@ import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDialog";
 import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import { useState, useEffect } from "react";
-import LeaveCalendar from "@/components/custom/LeaveCalendarList";
+import LeaveCalendar from "@/components/custom/LeaveCalendar";
 
 const AdministratorDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
