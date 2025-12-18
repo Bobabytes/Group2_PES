@@ -9,7 +9,7 @@ import TransactionList from "@/components/custom/TransactionList";
 import { useState, useEffect } from "react";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
-import LeaveCalendar from "@/components/custom/LeaveCalendar";
+import LeaveCalendar from "@/components/custom/LeaveCalendarList";
 
 const FinanceDashboard = () => {
   // DATABASE QUERY: Fetch Employee Details here
