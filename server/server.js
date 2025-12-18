@@ -80,6 +80,41 @@ const requireAdminHR = async (req, res, next) => {
   }
 };
 
+// Fetch number of pending leave approvals
+
+app.get('/api/hr/pending-leaves-count', requireAdminHR, async (req, res) => {
+  try {
+    const result = await dbGet(
+      `SELECT COUNT(*) AS count
+       FROM EmployeeLeaves
+       WHERE status = 'Pending'`
+    );
+
+    res.json({ pending: result.count });
+  } catch (error) {
+    console.error('Pending leaves count error:', error);
+    res.status(500).json({ error: 'Failed to fetch pending leave approvals' });
+  }
+});
+
+//Fetch total employee count
+
+app.get("/api/hr/employee-count", requireAdminHR, async (req, res) => {
+  try {
+    const row = await dbGet(`
+      SELECT COUNT(*) AS total
+      FROM users
+      WHERE is_active = 1
+    `);
+
+    res.json({ total: row.total });
+  } catch (error) {
+    console.error("Employee count error:", error);
+    res.status(500).json({ error: "Failed to fetch employee count" });
+  }
+});
+
+
 // Employee Management
 app.get('/api/admin/employees', requireAdminHR, async (req, res) => {
   try {
@@ -92,6 +127,8 @@ app.get('/api/admin/employees', requireAdminHR, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Add new employee
 
 app.post('/api/admin/employees', requireAdminHR, async (req, res) => {
   try {
@@ -175,6 +212,8 @@ app.put('/api/admin/employees/:id', requireAdminHR, async (req, res) => {
   }
 });
 
+
+// Leave Request Submission
 app.post("/api/leave-request", (req, res) => {
   const { usersId, leaveType, startDate, endDate} = req.body;
 
@@ -259,34 +298,7 @@ app.get('/api/employee/dashboard-stats', async (req, res) => {
   }
 });
 
-// Get employee leaves
-app.get('/api/employee/leaves', async (req, res) => {
-  const userId = req.query.userId || req.headers['user-id'];
-  
-  if (!userId) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
 
-  try {
-    const leaves = await dbAll(`
-      SELECT 
-        leave_id,
-        leave_type,
-        start_date,
-        end_date,
-        status,
-        created_at
-      FROM EmployeeLeaves 
-      WHERE users_id = ?
-      ORDER BY start_date DESC
-    `, [userId]);
-
-    res.json(leaves);
-  } catch (error) {
-    console.error('Leaves fetch error:', error);
-    res.status(500).json({ error: 'Failed to fetch leaves' });
-  }
-});
 
 
 // Start server
