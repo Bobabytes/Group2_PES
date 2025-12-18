@@ -4,6 +4,7 @@ import PayslipList from "@/components/custom/PayslipList";
 import QuickActions from "@/components/custom/QuickActions";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
+import LeaveCalendar from "@/components/custom/LeaveCalendarList";
 import { DollarSign, Calendar, FileText, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
@@ -106,15 +107,21 @@ const EmployeeDashboard = () => {
   ];
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Employee Dashboard</h1>
-      <StatsGrid stats={PersonalStats} />
-      
-      <div className="grid gap-6 md:grid-cols-2">
+  <div className="space-y-8 animate-fade-in">
+    <h1 className="text-3xl font-bold mb-4">Employee Dashboard</h1>
+    <StatsGrid stats={PersonalStats} />
+    <div className="grid gap-6 md:grid-cols-16">
+      <div className="md:col-span-6">
         <PayslipList payslips={payslips} />
+      </div>
+      <div className="md:col-span-6">
+        <LeaveCalendar />
+      </div>
+      <div className="md:col-span-4">
         <QuickActions actions={quickActions} />
       </div>
     </div>
+  </div>
   );
 };
 
