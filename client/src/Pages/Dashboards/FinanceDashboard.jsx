@@ -12,6 +12,10 @@ import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import LeaveCalendar from "@/components/custom/LeaveCalendar";
 
 const FinanceDashboard = () => {
+
+  const [userName, setUserName] = useState("");
+
+
   // DATABASE QUERY: Fetch Employee Details here
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +23,17 @@ const FinanceDashboard = () => {
   useEffect(() => {
     fetchDashboardStats();
   }, []);
-
+useEffect(() => {
+    // Get user name from localStorage
+    const name = localStorage.getItem("name");
+    if (name) {
+      setUserName(name);
+    } else {
+      console.warn("No user name found in localStorage");
+    }
+    
+    fetchDashboardStats();
+  }, []);
   // Fetch personal dashboard stats
   const fetchDashboardStats = async () => {
     const userId = localStorage.getItem("userId");
@@ -171,7 +185,7 @@ const FinanceDashboard = () => {
   ];
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Welcome back, (Name).</h1>
+      <h1 className="text-3xl font-bold mb-4"> Welcome back, {userName || "Finance"}</h1>
       <StatsGrid stats={FinanceStats} />
       
       <div className="grid gap-6 md:grid-cols-3">

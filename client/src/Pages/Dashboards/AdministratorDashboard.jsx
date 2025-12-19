@@ -9,14 +9,27 @@ import EmployeeManagementDialog from "@/components/custom/EmployeeManagementDial
 import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import { useState, useEffect } from "react";
 import LeaveCalendar from "@/components/custom/LeaveCalendar";
+import ManageLeavesDialog from "@/components/custom/ManageLeave";
 
 const AdministratorDashboard = () => {
-  // DATABASE QUERY: Fetch Employee Details here
+  // Get user name from localStorage
+  const [userName, setUserName] = useState("");
+  
   // DATABASE QUERY: Fetch Employee Details here
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
+    // Get user name from localStorage
+    const name = localStorage.getItem("name");
+    if (name) {
+      setUserName(name);
+    } else {
+      console.warn("No user name found in localStorage");
+      // Optional: Redirect to login if no user name
+      // navigate("/login");
+    }
+    
     fetchDashboardStats();
   }, []);
 
@@ -159,28 +172,32 @@ const AdministratorDashboard = () => {
     },
   ];
 
-
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
   const payslips = [
     { month: "March 2024", amount: 5400, status: "Not Paid" },
     { month: "February 2024", amount: 5400, status: "Paid" },
     { month: "January 2024", amount: 5200, status: "Paid" },
   ];
+  
   // Actions: Implement functionality here later.
   // Ideally the functionality would be in a function above this
   const quickActions = [
-    { label: "View Payslips", component : PayslipPDFViewer },
-    { label: "Submit Personal Leave Request", component : LeaveRequestDialog },
-    { label: "Manage Employee Leave Requests", onClick: () => toast.info("Employee Leave Management coming soon!") },
-    { label: "Add/Remove Employee", component : EmployeeManagementDialog },
-    { label: "Update Employee Details", component : UpdateEmployeeDialog },
+    { label: "View Payslips", component: PayslipPDFViewer },
+    { label: "Submit Personal Leave Request", component: LeaveRequestDialog },
+    { label: "Manage Employee Leave Requests", component: ManageLeavesDialog },
+    { label: "Add/Remove Employee", component: EmployeeManagementDialog },
+    { label: "Update Employee Details", component: UpdateEmployeeDialog },
     { label: "Manage Payroll Report", onClick: () => toast.info("Payroll processing coming soon!") },
     { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
   ];
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Welcome back, (Name). You are an Administrator.</h1>
+      {/* FIXED: Display actual user name */}
+      <h1 className="text-3xl font-bold mb-4">
+        Welcome back, {userName || "Administrator"}. You are an Administrator.
+      </h1>
+      
       <StatsGrid stats={AdminStats} />
       
       <div className="grid gap-6 md:grid-cols-16">
@@ -194,7 +211,7 @@ const AdministratorDashboard = () => {
           <QuickActions actions={quickActions} title="Administrator Actions" />
         </div>
         <div className="md:col-span-16">
-        <StatsGrid stats={PersonalStats} />
+          <StatsGrid stats={PersonalStats} />
         </div>
       </div>
     </div>

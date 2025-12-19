@@ -14,121 +14,153 @@ import LeaveCalendar from "@/components/custom/LeaveCalendar";
 import "@/Pages/Dashboards/Dashboard.css";
 
 const HRDashboard = () => {
-    // DATABASE QUERY: Fetch Employee Details here
-    const [stats, setStats] = useState({});
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(() => {
-      fetchDashboardStats();
-    }, []);
-
-    // Fetch number of pending approvals
-  const fetchPendingApprovals = async () => {
-  const userId = localStorage.getItem("userId");
-
-  if (!userId) return;
-
-  try {
-    const response = await fetch(
-      "http://localhost:8080/api/hr/pending-leaves-count",
-      {
-        headers: { "user-id": userId },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch pending approvals");
-    }
-
-    const data = await response.json();
-    setPendingApprovals(data.pending);
-  } catch (error) {
-    console.error("Error fetching pending approvals:", error);
-    toast.error("Failed to load pending approvals");
-  }
-};
-
-// Fetch total employee count
-const fetchEmployeeCount = async () => {
-  try {
-    const userId = localStorage.getItem("userId");
-
-    console.log("FETCH EMPLOYEE COUNT CALLED");
-
-    const res = await fetch("http://localhost:8080/api/hr/employee-count", {
-      headers: { "user-id": userId },
-    });
-
-    if (!res.ok) throw new Error("Failed to fetch employee count");
-
-    const data = await res.json();
-    console.log("EMPLOYEE COUNT RESPONSE:", data);
-    console.log("EMPLOYEE COUNT RAW DATA:", JSON.stringify(data, null, 2));
-
-
-    setStats((prev) => ({
-      ...prev,
-      employeeCount: data.total,
-    }));
-  } catch (err) {
-    console.error(err);
-  }
-};
-
+  const [userName, setUserName] = useState("");
+  const [stats, setStats] = useState({});
+  const [loading, setLoading] = useState(true);
   const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [todayLeaveCount, setTodayLeaveCount] = useState(0); // Add this state
 
   useEffect(() => {
-  const loadDashboard = async () => {
-    setLoading(true);
-    await fetchPendingApprovals();
-    await fetchEmployeeCount();
-    await fetchDashboardStats();
-    setLoading(false);
-  };
+    // Get user name from localStorage
+    const name = localStorage.getItem("name");
+    if (name) {
+      setUserName(name);
+    } else {
+      console.warn("No user name found in localStorage");
+    }
+    
+    loadDashboard();
+  }, []);
 
-  loadDashboard();
-}, []);
-
-
-  
-    // Fetch personal dashboard stats
-    const fetchDashboardStats = async () => {
+  // Function to fetch today's leave count
+  const fetchTodayLeaveCount = async () => {
+    try {
       const userId = localStorage.getItem("userId");
+      const userRole = localStorage.getItem("userRole") || "";
       
-      if (!userId) {
-        toast.error("Please log in first");
-        setLoading(false);
+      // Check if user has permission
+      const roleLower = userRole.toLowerCase();
+      const hasAccess = ["administrator", "admin", "hr", "manager"].includes(roleLower);
+      
+      if (!hasAccess) {
+        setTodayLeaveCount(0);
         return;
       }
-  
-      try {
-        const response = await fetch("http://localhost:8080/api/employee/dashboard-stats", {
-          headers: { "user-id": userId },
-        });
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch dashboard stats");
-        }
-        
-        const data = await response.json();
-        
-        // Format the data for display
-        setStats((prev) => ({
-          ...prev,
-          salary: `$${(data.currentSalary || 0).toLocaleString()}`,
-          leaveBalance: `${data.leaveBalance} days`,
-          nextPayment: data.nextPayment,
-          ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
-        }));
 
-      //Fetch dashboard stats
-      } catch (error) {
-        console.error("Error fetching dashboard stats:", error);
-        toast.error("Failed to load dashboard data");
-      } finally {
-        setLoading(false);
+      const response = await fetch("http://localhost:8080/api/leaves/today-count", {
+        headers: { "user-id": userId },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.status}`);
       }
-    };
+
+      const data = await response.json();
+      console.log("Today's leave count:", data);
+      setTodayLeaveCount(data.count || 0);
+    } catch (error) {
+      console.error("Error getting today's leave count:", error);
+      setTodayLeaveCount(0);
+    }
+  };
+
+  // Fetch number of pending approvals
+  const fetchPendingApprovals = async () => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) return;
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/hr/pending-leaves-count",
+        {
+          headers: { "user-id": userId },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch pending approvals");
+      }
+
+      const data = await response.json();
+      setPendingApprovals(data.pending);
+    } catch (error) {
+      console.error("Error fetching pending approvals:", error);
+      toast.error("Failed to load pending approvals");
+    }
+  };
+
+  // Fetch total employee count
+  const fetchEmployeeCount = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+
+      console.log("FETCH EMPLOYEE COUNT CALLED");
+
+      const res = await fetch("http://localhost:8080/api/hr/employee-count", {
+        headers: { "user-id": userId },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch employee count");
+
+      const data = await res.json();
+      console.log("EMPLOYEE COUNT RESPONSE:", data);
+
+      setStats((prev) => ({
+        ...prev,
+        employeeCount: data.total,
+      }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Fetch personal dashboard stats
+  const fetchDashboardStats = async () => {
+    const userId = localStorage.getItem("userId");
+    
+    if (!userId) {
+      toast.error("Please log in first");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/employee/dashboard-stats", {
+        headers: { "user-id": userId },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch dashboard stats");
+      }
+      
+      const data = await response.json();
+      
+      // Format the data for display
+      setStats((prev) => ({
+        ...prev,
+        salary: `$${(data.currentSalary || 0).toLocaleString()}`,
+        leaveBalance: `${data.leaveBalance} days`,
+        nextPayment: data.nextPayment,
+        ytd: `$${(data.ytdEarnings || 0).toLocaleString()}`,
+      }));
+
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      toast.error("Failed to load dashboard data");
+    }
+  };
+
+  const loadDashboard = async () => {
+    setLoading(true);
+    await Promise.all([
+      fetchPendingApprovals(),
+      fetchEmployeeCount(),
+      fetchDashboardStats(),
+      fetchTodayLeaveCount() // Add this here
+    ]);
+    setLoading(false);
+  };
 
   // MOCK DATA: REPLACE WITH DATABASE QUERIES INTO VARIABLES LATER 
   const payslips = [
@@ -136,7 +168,8 @@ const fetchEmployeeCount = async () => {
     { month: "February 2024", amount: 8204, status: "Paid" },
     { month: "January 2024", amount: 3030, status: "Paid" },
   ];
-    const PersonalStats = [
+
+  const PersonalStats = [
     {
       title: "Current Salary",
       value: loading ? "Loading..." : (stats?.salary || "Not available"),
@@ -182,7 +215,7 @@ const fetchEmployeeCount = async () => {
     },
     {
       title: "On Leave Today",
-      value: "12 (Mock)",
+      value: loading ? "Loading..." : `${todayLeaveCount}`, // Fixed: Use todayLeaveCount state
       description: "Across all departments (Fetch all users on leave on current day)",
       icon: UserCheck,
       borderColor: "border-l-accent",
@@ -205,6 +238,7 @@ const fetchEmployeeCount = async () => {
       iconColor: "text-primary"
     },
   ];
+
   // MOCK DATA: REPLACE WITH DATABASE QUERIES LATER
   const leaveRequests = [
     { employee: "John Smith (Mock)", type: "Annual Leave", days: 5, status: "Pending"},
@@ -212,21 +246,21 @@ const fetchEmployeeCount = async () => {
     { employee: "Mike Wilson (Mock)", type: "Personal Leave", days: 1, status: "Approved"},
     { employee: "Jane Doe (Mock)", type: "Personal Leave", days: 3, status: "Approved"},
   ];
+
   // Actions: Implement functionality here later.
   // Ideally the functionality would be in a function above this called by onClick.
   const quickActions = [
     { label: "View Payslips", component: PayslipPDFViewer },
-    { label: "Submit Personal Leave Request",component : LeaveRequestDialog },
-    { label: "Manage Employee Leave Requests", component : ManageLeave },
-    { label: "Add/Remove Employee", component : EmployeeManagementDialog },
-    { label: "Update Employee Details", component : UpdateEmployeeDialog },
+    { label: "Submit Personal Leave Request", component: LeaveRequestDialog },
+    { label: "Manage Employee Leave Requests", component: ManageLeave },
+    { label: "Add/Remove Employee", component: EmployeeManagementDialog },
+    { label: "Update Employee Details", component: UpdateEmployeeDialog },
   ];
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <h1 className="text-3xl font-bold mb-4">Welcome back, HR.</h1>
+      <h1 className="text-3xl font-bold mb-4"> Welcome back, {userName || "HR"}</h1>
       <StatsGrid stats={HRStats} />
-
 
       <div className="grid gap-6 md:grid-cols-16">
         <div className="md:col-span-16">
@@ -242,7 +276,7 @@ const fetchEmployeeCount = async () => {
           <QuickActions actions={quickActions} title="HR Team Actions" />
         </div>
         <div className="md:col-span-16">
-        <StatsGrid stats={PersonalStats} />
+          <StatsGrid stats={PersonalStats} />
         </div>
       </div>
     </div>

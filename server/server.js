@@ -214,8 +214,10 @@ app.put('/api/admin/employees/:id', requireAdminHR, async (req, res) => {
 
 
 // Leave Request Submission
-app.post("/api/leave-request", (req, res) => {
-  const { usersId, leaveType, startDate, endDate} = req.body;
+app.post("/api/leave-request", async (req, res) => {
+  const { usersId, leaveType, startDate, endDate, reason } = req.body;
+
+  console.log("Leave request received:", { usersId, leaveType, startDate, endDate });
 
   if (!usersId || !leaveType || !startDate || !endDate) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -234,22 +236,58 @@ app.post("/api/leave-request", (req, res) => {
     return res.status(400).json({ message: "End date must be after the start date" });
   }
 
-  const sql = `
-    INSERT INTO EmployeeLeaves (users_id, leave_type, start_date, end_date)
-    VALUES (?, ?, ?, ?)
-  `;
-
-  db.run(sql, [usersId, leaveType, startDate, endDate], function (err) {
-    if (err) {
-      console.error("DB Error:", err);
-      return res.status(500).json({ message: "Database error" });
+  // Calculate days requested
+  const daysRequested = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  console.log(`Days requested: ${daysRequested}`);
+  
+  try {
+    // Check user's leave balance
+    const user = await dbGet(`
+      SELECT leave_balance, name 
+      FROM users 
+      WHERE id = ?
+    `, [usersId]);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
     
+    console.log(`User balance: ${user.leave_balance}, Days requested: ${daysRequested}`);
+    
+    if (user.leave_balance < daysRequested) {
+      return res.status(400).json({ 
+        message: `Insufficient leave balance. ${user.name} has ${user.leave_balance} days left, but requested ${daysRequested} days.`,
+        currentBalance: user.leave_balance,
+        daysRequested: daysRequested
+      });
+    }
+    
+    // If enough balance, proceed with submission
+    const sql = `
+      INSERT INTO EmployeeLeaves (users_id, leave_type, start_date, end_date, reason, status)
+      VALUES (?, ?, ?, ?, ?, 'Pending')
+    `;
+
+    const result = await dbRun(sql, [usersId, leaveType, startDate, endDate, reason || null]);
+    
+    console.log(`Leave request inserted with ID: ${result.id}`);
+    
     return res.status(201).json({
-    message: "Leave request successfully submitted!",
-    leaveId: this.lastID,
-  });
-  });
+      success: true,
+      message: "Leave request submitted successfully!",
+      leaveId: result.id,
+      daysRequested: daysRequested,
+      remainingBalance: user.leave_balance,
+      note: "Balance will be deducted when leave is approved"
+    });
+    
+  } catch (error) {
+    console.error("Database error in leave request:", error);
+    return res.status(500).json({ 
+      message: "Database error",
+      error: error.message 
+    });
+  }
 });
 
 // STAT FETCH ROUTE
@@ -327,6 +365,239 @@ app.get('/api/employee/leaves', async (req, res) => {
   }
 });
 
+// Get all leaves for HR/Admin management
+app.get('/api/admin/leaves', requireAdminHR, async (req, res) => {
+  try {
+    const leaves = await dbAll(`
+      SELECT 
+        l.leave_id,
+        l.leave_type,
+        l.start_date,
+        l.end_date,
+        l.status,
+        l.created_at,
+        u.name as employee_name,
+        u.employee_id,
+        u.position as employee_position,
+        u.department
+      FROM EmployeeLeaves l
+      JOIN users u ON l.users_id = u.id
+      ORDER BY l.created_at DESC
+    `);
+
+    res.json(leaves);
+  } catch (error) {
+    console.error('Admin leaves fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch leaves' });
+  }
+});
+
+// Approve leave request and deduct leave balance
+app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Get leave details
+    const leave = await dbGet(`
+      SELECT l.*, u.leave_balance, u.name as employee_name
+      FROM EmployeeLeaves l
+      JOIN users u ON l.users_id = u.id
+      WHERE l.leave_id = ?
+    `, [id]);
+    
+    if (!leave) {
+      return res.status(404).json({ error: 'Leave not found' });
+    }
+    
+    // Calculate days
+    const startDate = new Date(leave.start_date);
+    const endDate = new Date(leave.end_date);
+    const daysRequested = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    
+    // Check balance
+    if (leave.leave_balance < daysRequested) {
+      return res.status(400).json({ 
+        error: 'Insufficient leave balance',
+        currentBalance: leave.leave_balance,
+        daysRequested: daysRequested
+      });
+    }
+    
+    // Update leave status
+    await dbRun(
+      'UPDATE EmployeeLeaves SET status = ? WHERE leave_id = ?',
+      ['Approved', id]
+    );
+    
+    // Update user balance
+    const newBalance = leave.leave_balance - daysRequested;
+    await dbRun(
+      'UPDATE users SET leave_balance = ? WHERE id = ?',
+      [newBalance, leave.users_id]
+    );
+    
+    // Log to audit
+    await dbRun(
+      `INSERT INTO audit_logs (user_id, action, details) 
+       VALUES (?, ?, ?)`,
+      [req.userId, 'LEAVE_APPROVED', 
+       `Approved leave ${id}. Deducted ${daysRequested} days.`]
+    );
+    
+    res.json({ 
+      success: true, 
+      message: 'Leave approved successfully',
+      daysDeducted: daysRequested,
+      newBalance: newBalance
+    });
+    
+  } catch (error) {
+    console.error('Error approving leave:', error);
+    res.status(500).json({ 
+      error: 'Failed to approve leave',
+      details: error.message 
+    });
+  }
+});
+// Reject leave request
+app.put('/api/admin/leaves/:id/reject', requireAdminHR, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    
+    // Check if leave exists
+    const leave = await dbGet('SELECT * FROM EmployeeLeaves WHERE leave_id = ?', [id]);
+    if (!leave) {
+      return res.status(404).json({ error: 'Leave not found' });
+    }
+    
+    // If leave was previously approved and we're rejecting it now,
+    // we might want to restore the balance
+    if (leave.status === 'Approved') {
+      // Calculate days to restore
+      const startDate = new Date(leave.start_date);
+      const endDate = new Date(leave.end_date);
+      const daysToRestore = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      
+      // Restore leave balance
+      const user = await dbGet('SELECT leave_balance FROM users WHERE id = ?', [leave.users_id]);
+      const newBalance = (user.leave_balance || 0) + daysToRestore;
+      
+      await dbRun(
+        'UPDATE users SET leave_balance = ? WHERE id = ?',
+        [newBalance, leave.users_id]
+      );
+    }
+    
+    // Update status to Rejected
+    await dbRun(
+      'UPDATE EmployeeLeaves SET status = ? WHERE leave_id = ?',
+      ['Rejected', id]
+    );
+    
+    // Log to audit logs
+    const details = reason 
+      ? `Rejected leave request ${id} for employee ${leave.users_id}. Reason: ${reason}`
+      : `Rejected leave request ${id} for employee ${leave.users_id}`;
+    
+    await dbRun(
+      `INSERT INTO audit_logs (user_id, action, details) 
+       VALUES (?, ?, ?)`,
+      [req.userId, 'LEAVE_REJECTED', details]
+    );
+    
+    res.json({ 
+      success: true, 
+      message: 'Leave request rejected successfully' 
+    });
+  } catch (error) {
+    console.error('Error rejecting leave:', error);
+    res.status(500).json({ error: 'Failed to reject leave' });
+  }
+});
+// Optional: Single endpoint for both approve/reject with status parameter
+app.put('/api/admin/leaves/:id/status', requireAdminHR, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, reason } = req.body;
+    
+    // Validate status
+    if (!['Approved', 'Rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status. Must be "Approved" or "Rejected"' });
+    }
+    
+    // Check if leave exists
+    const leave = await dbGet('SELECT * FROM EmployeeLeaves WHERE leave_id = ?', [id]);
+    if (!leave) {
+      return res.status(404).json({ error: 'Leave not found' });
+    }
+    
+    // Update status
+    await dbRun(
+      'UPDATE EmployeeLeaves SET status = ? WHERE leave_id = ?',
+      [status, id]
+    );
+    
+    // Log to audit logs
+    const action = status === 'Approved' ? 'LEAVE_APPROVED' : 'LEAVE_REJECTED';
+    let details = `${status} leave request ${id} for employee ${leave.users_id}`;
+    if (reason && status === 'Rejected') {
+      details += `. Reason: ${reason}`;
+    }
+    
+    await dbRun(
+      `INSERT INTO audit_logs (user_id, action, details) 
+       VALUES (?, ?, ?)`,
+      [req.userId, action, details]
+    );
+    
+    res.json({ 
+      success: true, 
+      message: `Leave request ${status.toLowerCase()} successfully` 
+    });
+  } catch (error) {
+    console.error('Error updating leave status:', error);
+    res.status(500).json({ error: 'Failed to update leave status' });
+  }
+});
+
+// Get count of employees on leave today
+app.get('/api/leaves/today-count', async (req, res) => {
+  try {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    console.log(`Counting leaves for date: ${today}`);
+    
+    // More robust query
+    const result = await dbGet(`
+      SELECT COUNT(DISTINCT u.id) as count
+      FROM EmployeeLeaves l
+      JOIN users u ON l.users_id = u.id
+      WHERE l.status = 'Approved'
+        AND date('${today}') >= date(l.start_date)
+        AND date('${today}') <= date(l.end_date)
+        AND u.is_active = 1
+    `);
+    
+    console.log(`Today's leave count result:`, result);
+    
+    // Always return a number, even if result is undefined
+    const count = result?.count || 0;
+    
+    res.json({ 
+      success: true,
+      count: count,
+      today: today
+    });
+  } catch (error) {
+    console.error('Error counting today\'s leaves:', error);
+    res.json({ 
+      success: false,
+      count: 0,
+      error: error.message 
+    });
+  }
+});
 
 // Start server
 const PORT = 8080;
