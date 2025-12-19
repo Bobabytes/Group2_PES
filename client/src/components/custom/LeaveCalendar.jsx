@@ -211,7 +211,7 @@ const LeaveCalendar = ({ title = "Leave Calendar" }) => {
       </CardHeader>
       <CardContent className="list-card-content p-0">
         <ScrollArea className="h-auto">
-          <div className="">
+          <div className="h-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               {/* Left Column - Calendar */}
               <div className="calendar-container h-full w-full">

@@ -6,7 +6,7 @@ import "@/Pages/Dashboards/Dashboard.css";
 
 const TransactionList = ({ transactions }) => {
   return (
-    <Card className="list-card">
+    <Card className="list-card list-card">
       <CardHeader className="list-card-header">
         <CardTitle className="flex items-center gap-2">
           <Receipt className="w-5 h-5" />

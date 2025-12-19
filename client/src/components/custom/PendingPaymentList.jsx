@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const PendingPaymentList = ({ payments }) => {
   return (
-    <Card className="list-card">
+    <Card className="list-card h-full">
       <CardHeader className="list-card-header">
         <CardTitle>Pending Disbursements</CardTitle>
       </CardHeader>

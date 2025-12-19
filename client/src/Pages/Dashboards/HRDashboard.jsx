@@ -17,14 +17,10 @@ const HRDashboard = () => {
     // DATABASE QUERY: Fetch Employee Details here
     const [stats, setStats] = useState({});
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
-  
-=======
     
     useEffect(() => {
       fetchDashboardStats();
     }, []);
->>>>>>> d0e3976 (Fetched number of pending approvals for hr)
 
     // Fetch number of pending approvals
   const fetchPendingApprovals = async () => {
