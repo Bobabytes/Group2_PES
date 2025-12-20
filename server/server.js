@@ -394,8 +394,10 @@ app.get('/api/admin/leaves', requireAdminHR, async (req, res) => {
 
 // Approve leave request and deduct leave balance
 app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
+    await dbRun('BEGIN TRANSACTION');
     
     // Get leave details
     const leave = await dbGet(`
@@ -405,9 +407,15 @@ app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
       WHERE l.leave_id = ?
     `, [id]);
     
-    if (!leave) {
-      return res.status(404).json({ error: 'Leave not found' });
-    }
+  if (!leave) {
+    await dbRun('ROLLBACK');
+    return res.status(404).json({ error: 'Leave not found' });
+  }
+
+  if (leave.status === 'Approved') {
+    await dbRun('ROLLBACK');
+    return res.status(400).json({ error: 'Leave already approved' });
+  }  
     
     // Calculate days
     const startDate = new Date(leave.start_date);
@@ -416,10 +424,11 @@ app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
     
     // Check balance
     if (leave.leave_balance < daysRequested) {
-      return res.status(400).json({ 
+      await dbRun('ROLLBACK');
+      return res.status(400).json({
         error: 'Insufficient leave balance',
         currentBalance: leave.leave_balance,
-        daysRequested: daysRequested
+        daysRequested
       });
     }
     
@@ -432,8 +441,8 @@ app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
     // Update user balance
     const newBalance = leave.leave_balance - daysRequested;
     await dbRun(
-      'UPDATE users SET leave_balance = ? WHERE id = ?',
-      [newBalance, leave.users_id]
+      'UPDATE users SET leave_balance = leave_balance - ? WHERE id = ?',
+      [daysRequested, leave.users_id]
     );
     
     // Log to audit
@@ -443,6 +452,8 @@ app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
       [req.userId, 'LEAVE_APPROVED', 
        `Approved leave ${id}. Deducted ${daysRequested} days.`]
     );
+
+    await dbRun('COMMIT');
     
     res.json({ 
       success: true, 
@@ -452,11 +463,9 @@ app.put('/api/admin/leaves/:id/approve', requireAdminHR, async (req, res) => {
     });
     
   } catch (error) {
+    await dbRun('ROLLBACK');
     console.error('Error approving leave:', error);
-    res.status(500).json({ 
-      error: 'Failed to approve leave',
-      details: error.message 
-    });
+    res.status(500).json({ error: 'Failed to approve leave' });
   }
 });
 // Reject leave request
