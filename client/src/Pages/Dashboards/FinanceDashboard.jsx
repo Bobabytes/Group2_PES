@@ -10,10 +10,13 @@ import { useState, useEffect } from "react";
 import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer"; 
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import LeaveCalendar from "@/components/custom/LeaveCalendar";
+import PayrollReportDialog from "@/components/custom/PayrollReportDialog";
+
 
 const FinanceDashboard = () => {
 
   const [userName, setUserName] = useState("");
+  const [payrollDialogOpen, setPayrollDialogOpen] = useState(false);
 
 
   // DATABASE QUERY: Fetch Employee Details here
@@ -21,19 +24,12 @@ const FinanceDashboard = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-useEffect(() => {
-    // Get user name from localStorage
-    const name = localStorage.getItem("name");
-    if (name) {
-      setUserName(name);
-    } else {
-      console.warn("No user name found in localStorage");
-    }
-    
-    fetchDashboardStats();
-  }, []);
+  const name = localStorage.getItem("name");
+  if (name) setUserName(name);
+
+  fetchDashboardStats();
+}, []);
+
   // Fetch personal dashboard stats
   const fetchDashboardStats = async () => {
     const userId = localStorage.getItem("userId");
@@ -160,7 +156,7 @@ useEffect(() => {
       label: "Submit Personal Leave Request", 
       component: LeaveRequestDialog
     },
-    { label: "Manage Payroll Report", onClick: () => toast.info("Payroll processing coming soon!") },
+    { label: "Manage Payroll Report", icon: FileText, onClick: () => setPayrollDialogOpen(true) },
     { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
   ];
   // Payroll Reports: shows the recent payroll runs
@@ -209,6 +205,10 @@ useEffect(() => {
         <StatsGrid stats={PersonalStats} />
         </div>
       </div>
+        <PayrollReportDialog
+        open={payrollDialogOpen}
+        onOpenChange={setPayrollDialogOpen}
+        />
     </div>
   );
 };

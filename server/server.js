@@ -570,6 +570,56 @@ app.put('/api/admin/leaves/:id/status', requireAdminHR, async (req, res) => {
   }
 });
 
+// Middleware for finance access
+const requireFinance = async (req, res, next) => {
+  const userId = req.headers['user-id'];
+  if (!userId) return res.status(401).json({ error: 'Authentication required' });
+
+  const user = await dbGet(
+    'SELECT position FROM users WHERE id = ?',
+    [userId]
+  );
+
+  if (!user || user.position !== 'Finance') {
+    return res.status(403).json({ error: 'Finance access only' });
+  }
+
+  next();
+};
+
+// Payroll summary for finance
+app.get('/api/finance/payroll-summary', requireFinance, async (req, res) => {
+  try {
+    const TAX_RATE = 0.20;
+
+    
+    const rows = await dbAll(`
+      SELECT salary
+      FROM users
+      WHERE is_active = 1
+    `);
+
+    const grossPayroll = rows.reduce(
+      (sum, row) => sum + (row.salary * 3),
+      0
+    );
+
+    const taxAmount = grossPayroll * TAX_RATE;
+    const netPayroll = grossPayroll - taxAmount;
+
+    res.json({
+      quarter: 'Q1',
+      grossPayroll,
+      taxRate: TAX_RATE,
+      taxAmount,
+      netPayroll
+    });
+  } catch (error) {
+    console.error('Payroll summary error:', error);
+    res.status(500).json({ error: 'Failed to generate payroll report' });
+  }
+});
+
 // Get count of employees on leave today
 app.get('/api/leaves/today-count', async (req, res) => {
   try {

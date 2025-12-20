@@ -14,7 +14,7 @@ const QuickActions = ({ actions, title = "Actions" }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="list-card-content p-0">
-        <scrollArea className="height-full">
+        <ScrollArea className="h-full">
         <div className="px-4 pb-4">
           <div className="space-y-2">
             {actions.map((action, index) => (
@@ -39,7 +39,7 @@ const QuickActions = ({ actions, title = "Actions" }) => {
             ))}
           </div>
         </div>
-        </scrollArea>
+        </ScrollArea>
       </CardContent>
     </Card>
   );
