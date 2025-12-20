@@ -275,7 +275,7 @@ app.post("/api/leave-request", async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Leave request submitted successfully!",
-      leaveId: result.id,
+      leaveId: result.lastID,
       daysRequested: daysRequested,
       remainingBalance: user.leave_balance,
       note: "Balance will be deducted when leave is approved"
