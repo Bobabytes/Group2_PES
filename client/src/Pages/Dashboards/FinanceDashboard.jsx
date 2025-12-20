@@ -17,7 +17,7 @@ const FinanceDashboard = () => {
 
   const [userName, setUserName] = useState("");
   const [payrollDialogOpen, setPayrollDialogOpen] = useState(false);
-
+  const [pendingPaymentsCount, setPendingPaymentsCount] = useState(0);
 
   // DATABASE QUERY: Fetch Employee Details here
   const [stats, setStats] = useState(null);
@@ -27,8 +27,28 @@ const FinanceDashboard = () => {
   const name = localStorage.getItem("name");
   if (name) setUserName(name);
 
+  fetchPendingPaymentsCount();
   fetchDashboardStats();
 }, []);
+
+//Fetch pending payments count
+const fetchPendingPaymentsCount = async () => {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/finance/pending-payments-count"
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch pending payments count");
+    }
+
+    const data = await response.json();
+    setPendingPaymentsCount(data.pending);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to load pending payments count");
+  }
+};
 
   // Fetch personal dashboard stats
   const fetchDashboardStats = async () => {
@@ -88,8 +108,8 @@ const FinanceDashboard = () => {
     },
     {
       title: "Pending Payments",
-      value: "30 (Mock)",
-      description: "Pending salary payments (Fetch from payslips set as pending)",
+      value: `${pendingPaymentsCount}`,
+      description: "Pending salary payments",
       icon: AlertCircle,
       borderColor: "border-l-accent",
       iconColor: "text-primary"

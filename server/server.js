@@ -587,6 +587,23 @@ const requireFinance = async (req, res, next) => {
   next();
 };
 
+//Count pending payslips
+app.get("/api/finance/pending-payments-count", async (req, res) => {
+  try {
+    const result = await dbGet(`
+      SELECT COUNT(*) AS count
+      FROM payslips
+      WHERE status = 'Pending'
+    `);
+
+    res.json({ pending: result.count });
+  } catch (error) {
+    console.error("Pending payments count error:", error);
+    res.status(500).json({ error: "Failed to fetch pending payments count" });
+  }
+});
+
+
 // Payroll summary for finance
 app.get('/api/finance/payroll-summary', requireFinance, async (req, res) => {
   try {
