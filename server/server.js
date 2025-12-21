@@ -637,6 +637,87 @@ app.get('/api/finance/payroll-summary', requireFinance, async (req, res) => {
   }
 });
 
+// Fetch all payslips for finance
+app.get('/api/finance/payslips', requireFinance, async (req, res) => {
+  try {
+    const rows = await dbAll(`
+      SELECT
+        p.id,
+        u.name AS employee_name,
+        u.employee_id,
+        p.month || ' ' || p.year AS period,
+        p.amount AS net,
+        p.amount AS gross,
+        p.status,
+        p.created_at
+      FROM payslips p
+      JOIN users u ON p.user_id = u.id
+      ORDER BY p.created_at DESC
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching payslips:', err);
+    res.status(500).json({ error: 'Failed to fetch payslips' });
+  }
+});
+
+
+
+// Approve payslip
+app.put('/api/finance/payslips/:id/approve', requireFinance, async (req, res) => {
+  try {
+    await dbRun(
+      "UPDATE payslips SET status = 'Approved' WHERE id = ?",
+      [req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to approve payslip' });
+  }
+});
+
+
+// Reject payslip
+app.put('/api/finance/payslips/:id/reject', requireFinance, async (req, res) => {
+  try {
+    await dbRun(
+      "UPDATE payslips SET status = 'Rejected' WHERE id = ?",
+      [req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to reject payslip' });
+  }
+});
+
+// Mark payslip as paid
+app.put('/api/finance/payslips/:id/pay', requireFinance, async (req, res) => {
+  const userId = req.headers['user-id'];
+
+  try {
+    await dbRun(
+      `
+      UPDATE payslips
+      SET
+        status = 'Paid',
+        paid_at = CURRENT_TIMESTAMP,
+        paid_by = ?
+      WHERE id = ?
+      `,
+      [userId, req.params.id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Disbursement error:', err);
+    res.status(500).json({ error: 'Failed to disburse payslip' });
+  }
+});
+
+
+
+
 // Get count of employees on leave today
 app.get('/api/leaves/today-count', async (req, res) => {
   try {
