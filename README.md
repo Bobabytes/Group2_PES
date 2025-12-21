@@ -26,16 +26,41 @@ cd <CLIENT_FOLDER>
 npm install
 # Step 3: Run the application
 npm run dev
-
-
-# Packages, if needed (prolly not)
-npm i @tanstack/react-query
-npm i tailwindcss @tailwindcss/vite
-npm i react-router
-npm i sonner
-npm i radix-ui
-npm i next-themes
 ```
+## Docker Deployment
+
+### Prerequisites
+- Docker and Docker Compose installed
+
+### Quick Start
+1. Make sure you're in the project root directory
+2. Run: `docker-compose up --build`
+3. Open browser to:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8080
+
+### Useful Docker Commands
+```bash
+# Build and start all services
+docker-compose up --build
+
+# Start in detached mode (background)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild specific service
+docker-compose up --build server
+
+# Remove everything including volumes
+docker-compose down -v
+
+# Check running containers
+docker-compose ps
 ## Connecting the database
 
 You will see a "database.db" file as well as a "database.sql" in the server folder. That is our database.
