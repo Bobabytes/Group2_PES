@@ -570,8 +570,8 @@ app.put('/api/admin/leaves/:id/status', requireAdminHR, async (req, res) => {
   }
 });
 
-// Middleware for finance access
-const requireFinance = async (req, res, next) => {
+// Middleware for finance and admin access
+const requireFinanceOrAdmin = async (req, res, next) => {
   const userId = req.headers['user-id'];
   if (!userId) return res.status(401).json({ error: 'Authentication required' });
 
@@ -580,15 +580,16 @@ const requireFinance = async (req, res, next) => {
     [userId]
   );
 
-  if (!user || user.position !== 'Finance') {
-    return res.status(403).json({ error: 'Finance access only' });
+  if (!user || !["Finance", "Administrator", "Admin"].includes(user.position)) {
+    return res.status(403).json({ error: 'Finance or Admin access only' });
   }
 
   next();
 };
 
+
 //Count pending payslips
-app.get("/api/finance/pending-payments-count", async (req, res) => {
+app.get("/api/finance/pending-payments-count",requireFinanceOrAdmin ,async (req, res) => {
   try {
     const result = await dbGet(`
       SELECT COUNT(*) AS count
@@ -605,7 +606,7 @@ app.get("/api/finance/pending-payments-count", async (req, res) => {
 
 
 // Payroll summary for finance
-app.get('/api/finance/payroll-summary', requireFinance, async (req, res) => {
+app.get('/api/finance/payroll-summary', requireFinanceOrAdmin ,async (req, res) => {
   try {
     const TAX_RATE = 0.20;
 
@@ -638,7 +639,7 @@ app.get('/api/finance/payroll-summary', requireFinance, async (req, res) => {
 });
 
 // Fetch all payslips for finance
-app.get('/api/finance/payslips', requireFinance, async (req, res) => {
+app.get('/api/finance/payslips', requireFinanceOrAdmin , async (req, res) => {
   try {
     const rows = await dbAll(`
       SELECT
@@ -665,7 +666,7 @@ app.get('/api/finance/payslips', requireFinance, async (req, res) => {
 
 
 // Approve payslip
-app.put('/api/finance/payslips/:id/approve', requireFinance, async (req, res) => {
+app.put('/api/finance/payslips/:id/approve', requireFinanceOrAdmin, async (req, res) => {
   try {
     await dbRun(
       "UPDATE payslips SET status = 'Approved' WHERE id = ?",
@@ -679,7 +680,7 @@ app.put('/api/finance/payslips/:id/approve', requireFinance, async (req, res) =>
 
 
 // Reject payslip
-app.put('/api/finance/payslips/:id/reject', requireFinance, async (req, res) => {
+app.put('/api/finance/payslips/:id/reject', requireFinanceOrAdmin, async (req, res) => {
   try {
     await dbRun(
       "UPDATE payslips SET status = 'Rejected' WHERE id = ?",
@@ -692,7 +693,7 @@ app.put('/api/finance/payslips/:id/reject', requireFinance, async (req, res) => 
 });
 
 // Mark payslip as paid
-app.put('/api/finance/payslips/:id/pay', requireFinance, async (req, res) => {
+app.put('/api/finance/payslips/:id/pay', requireFinanceOrAdmin, async (req, res) => {
   const userId = req.headers['user-id'];
 
   try {

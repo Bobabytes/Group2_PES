@@ -10,6 +10,9 @@ import UpdateEmployeeDialog from "@/components/custom/UpdateEmployee";
 import { useState, useEffect } from "react";
 import LeaveCalendar from "@/components/custom/LeaveCalendar";
 import ManageLeavesDialog from "@/components/custom/ManageLeave";
+import ManagePaymentsDialog from "@/components/custom/ManagePaymentsDialog";
+import PayrollReportDialog from "@/components/custom/PayrollReportDialog";
+
 
 const AdministratorDashboard = () => {
   // Get user name from localStorage
@@ -187,8 +190,8 @@ const AdministratorDashboard = () => {
     { label: "Manage Employee Leave Requests", component: ManageLeavesDialog },
     { label: "Add/Remove Employee", component: EmployeeManagementDialog },
     { label: "Update Employee Details", component: UpdateEmployeeDialog },
-    { label: "Manage Payroll Report", onClick: () => toast.info("Payroll processing coming soon!") },
-    { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
+    { label: "Manage Payroll Report", icon: FileText, component : PayrollReportDialog},
+    { label: "Manage Payments", icon: DollarSign, component : ManagePaymentsDialog},
   ];
 
   return (
