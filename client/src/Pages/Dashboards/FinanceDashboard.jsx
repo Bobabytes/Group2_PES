@@ -176,7 +176,7 @@ const fetchPendingPaymentsCount = async () => {
       label: "Submit Personal Leave Request", 
       component: LeaveRequestDialog
     },
-    { label: "Manage Payroll Report", icon: FileText, onClick: () => setPayrollDialogOpen(true) },
+    { label: "Manage Payroll Report", icon: FileText, component : PayrollReportDialog},
     { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
   ];
   // Payroll Reports: shows the recent payroll runs
