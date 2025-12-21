@@ -11,7 +11,7 @@ import PayslipPDFViewer from "@/components/custom/PayslipPDFviewer";
 import LeaveRequestDialog from "@/components/custom/LeaveRequestDialog";
 import LeaveCalendar from "@/components/custom/LeaveCalendar";
 import PayrollReportDialog from "@/components/custom/PayrollReportDialog";
-
+import ManagePaymentsDialog from "@/components/custom/ManagePaymentsDialog";
 
 const FinanceDashboard = () => {
 
@@ -177,7 +177,7 @@ const fetchPendingPaymentsCount = async () => {
       component: LeaveRequestDialog
     },
     { label: "Manage Payroll Report", icon: FileText, component : PayrollReportDialog},
-    { label: "Manage Payments", onClick: () => toast.info("Payment disbursement coming soon!") },
+    { label: "Manage Payments", icon: DollarSign, component : ManagePaymentsDialog},
   ];
   // Payroll Reports: shows the recent payroll runs
   const payrollRuns = [
@@ -225,10 +225,7 @@ const fetchPendingPaymentsCount = async () => {
         <StatsGrid stats={PersonalStats} />
         </div>
       </div>
-        <PayrollReportDialog
-        open={payrollDialogOpen}
-        onOpenChange={setPayrollDialogOpen}
-        />
+        
     </div>
   );
 };
